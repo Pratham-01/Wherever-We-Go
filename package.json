@@ -1,0 +1,25 @@
+{
+  "name": "wherever-we-go",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "devStart": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pratham-01/Wherever-We-Go.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pratham-01/Wherever-We-Go/issues"
+  },
+  "homepage": "https://github.com/Pratham-01/Wherever-We-Go#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

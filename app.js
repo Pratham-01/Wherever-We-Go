@@ -5,12 +5,13 @@ const app = express();
 
 var mongoClient = require("mongodb").MongoClient;
 // var url = "mongodb://localhost:27017/";
+app.use(express.static(__dirname+ '/public'));
 var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority"
 
 
 // Home Route
 app.get("/", (req,res) => {
-    res.sendFile(__dirname + "/index.html");
+    res.sendFile(__dirname + "/layout.html");
 });
 
 app.get("/blogs", (req, res) => {
@@ -49,12 +50,12 @@ app.post("/login", (req,res) => {
         var enteredEmail = req.body.email;
         var enteredPass = req.body.pass;
         var dbo = db.db("wherever_we_go");
-        dbo.collection("blogs").find({ email : enteredEmail }).toArray( (err, result) => {
+        dbo.collection("user").find({ email : enteredEmail }).toArray( (err, result) => {
             if (err) throw err;
             
             if (result.length == 0) res.json( {error : "No such user exists"} );
             else if (result[0].password != enteredPass) res.json( {error : "Incorrect password"} );
-            else if (result[0].password == enteredPass) res.redirect("/");
+            else if (result[0].password == enteredPass) res.redirect("/layout");
 
         })
         db.close();
@@ -68,8 +69,7 @@ app.get("/register", (req, res) => {
 });
 
 app.post ("/register", (req, res) => {
-    mongoclient.connect(url, function(err, db) 
-    {
+    mongoclient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("wherever_we_go");
         var obj = {
