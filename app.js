@@ -46,9 +46,7 @@ app.get("/blogs", (req, res) => {
     });
 })
 
-app.get("/blog/:id", (req, res) => {
-    res.send("hello");
-})
+
 
 // Login
 app.get("/login", (req, res) => {
@@ -117,12 +115,11 @@ app.get('/checkSession', (req, res) => {
     session = req.session;
     console.log(session.userid);
     res.send(session.userid)
-})
+});
 
-
-app.listen(8080);
-
-
+app.get("/blog/:id", (req, res) => {
+    res.send("hello");
+});
 
 // express mongodb cookie-parser express-session multer fs path 
 
@@ -183,6 +180,8 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
             console.log("1 document inserted");
             db.close();
         });
-        res.json("success");
+        res.redirect("/")
     });
 })
+
+app.listen(8080);
