@@ -5,7 +5,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     </head>
 
-    <body  ng-app="myApp" ng-init="user=false">
+    <body ng-app = "myApp" ng-controller = "MyController">
         <div id="navbar">
             <ul class="nav nav-pills">
                 
@@ -17,13 +17,11 @@
                         <a class="nav-link" href="">Requests</a>
                     </li-->
                     <li class="nav-item" ng-show="user">
-                        <a class="nav-link" href="/">Log Out</a>
+                        <a class="nav-link" href="/logout">Log Out</a>
                     </li>
                     <li class="nav-item" ng-show="user">
                         <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
-                    </li>
-                
-                    
+                    </li> 
                 
                     <li class="nav-item" ng-hide="user">
                         <a class="nav-link" href="/login">Log In</a>
@@ -36,23 +34,53 @@
             </div>
 
             <div id="body">
-                
+
+
+
             </div>
     </body>
     
     <script>
- 
-       var app = angular.module('myApp', []);
+            var app = angular.module('myApp',[]);
+            app.controller("MyController", function($scope, $http) {
+                $http({
+                    method : "GET",
+                    url : "/checkSession"
+                })
+                .success(function (data, status, headers, config) {
+                    console.log("data returned " ,data);
+                    if (data) {
+                      $scope.user = true;
+                    } else {
+                      $scope.user = false;
+                    }
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data +
+                        "<hr />status: " + status +
+                        "<hr />headers: " + header +
+                        "<hr />config: " + config;
+                });
 
-        app.controller('myCtrl', function($scope, $http) {
-        $http.get("welcome.htm")
-            .then(function(response) {
-                $scope.myWelcome = response.data;
+                $http({
+                    method : "GET",
+                    url : "/blogs"
+                })
+                .success(function (data, status, headers, config) {
+                    console.log("data returned " ,data);
+                    if (data) {
+                      $scope.user = true;
+                    } else {
+                      $scope.user = false;
+                    }
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data +
+                        "<hr />status: " + status +
+                        "<hr />headers: " + header +
+                        "<hr />config: " + config;
+                });
             });
-        });
-
-        
-
-    </script>
+          </script>
 
 </html>
