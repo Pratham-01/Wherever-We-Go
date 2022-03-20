@@ -47,12 +47,37 @@
             ];  
               $scope.selectedOption = "Where do you come from?";
               $scope.submit = function(){
-                $http.post("")
-                    .then(function(response) {
-                        $scope.myWelcome = response.data;
-                    });
-                  }
+                
+                var data = {
+                  'name' : $scope.name,
+                  'email' : $scope.email,
+                  'password' : $scope.pass,
+                  'state' : $scope.selectedOption
+                };
+                console.log(data);
+          
+                var config = { headers : { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;' }};
+
+                $http({
+                    method : "POST",
+                    url : "/register",
+                    data : data
+                })
+                .success(function (data, status, headers, config) {
+                    console.log("data returned " ,data);
+                    if (data) {
+                      alert (data.error);
+                    }
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data +
+                        "<hr />status: " + status +
+                        "<hr />headers: " + header +
+                        "<hr />config: " + config;
                 });
+
+              } //submit
+                });   // controller
           </script>
         
     </body>
