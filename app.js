@@ -123,3 +123,65 @@ app.get('/logout',(req,res) => {
 
 
 app.listen(8080);
+
+
+
+// express mongodb cookie-parser express-session multer fs path 
+
+app.get("/add_blog", (req,res) => {
+    res.sendFile(__dirname + "/add_blog.html");
+});
+
+const path = require('path');
+const fs = require("fs");
+const multer = require("multer");
+const { log } = require("console");
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname+ "-" + Date.now() )//file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+    }
+});
+var upload = multer({ storage: storage });
+
+
+app.post("/add_blog",upload.array("imgs"), (req, res)=>{
+   console.log("bruh : ", req.files); 
+
+    var imgs = [];
+    for (var i=0; i<req.files.length; i++){
+        let img = fs.readFileSync(req.files[i].path);
+        let encode_image = img.toString("base64");
+        let finalImg = {
+            contentType : req.files[i].mimetype,
+            path: req.files[i].path,
+            image : new Buffer(encode_image, "base64")
+        }
+        imgs.push(finalImg);
+    }
+
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        var obj = {
+            title : req.body.title,
+            content : req.body.content,
+            state : req.body.state,
+            city : req.body.city,
+            imgs : imgs,
+            date : new Date(),
+            rating : [],
+            comments : [],
+        };
+        
+        dbo.collection("blogs").insertOne(obj, function(err, res) {
+            if (err) throw err;
+            console.log("1 document inserted");
+            db.close();
+        });
+        res.json("success");
+    });
+})

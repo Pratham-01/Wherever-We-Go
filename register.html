@@ -60,12 +60,12 @@
 
                 $http({
                     method : "POST",
-                    url : "/register",
+                    url : "/upload",
                     data : data
                 })
                 .success(function (data, status, headers, config) {
                    if (data == "success")
-                    window.location.href = "/login";
+                    window.location.href = "/";
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
