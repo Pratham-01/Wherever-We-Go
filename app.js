@@ -147,7 +147,7 @@ var upload = multer({ storage: storage });
 
 
 app.post("/add_blog",upload.array("imgs"), (req, res)=>{
-   console.log("bruh : ", req.files); 
+   //console.log("bruh : ", req.files); 
 
     var imgs = [];
     for (var i=0; i<req.files.length; i++){
@@ -164,13 +164,16 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
     mongoclient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("wherever_we_go");
+        var today = new Date();
+        var todaysdate = today.getDate()+"-"+today.getMonth()+"-"+today.getFullYear();
+        var state = req.body.state.slice(7);
         var obj = {
             title : req.body.title,
             content : req.body.content,
-            state : req.body.state,
+            state : state,
             city : req.body.city,
             imgs : imgs,
-            date : new Date(),
+            date : todaysdate,
             rating : [],
             comments : [],
         };
