@@ -32,7 +32,7 @@
                 <br>
                 <div class="header"><h4 class="animation a7">Already Registered?<a href="/login">Sign in Here</a></h4></div>
                 <br>
-                <button class="animation a6" style="color: black; font-size: 18px;" ng-submit="submit()">REGISTER</button>
+                <button class="animation a6" style="color: black; font-size: 18px;" ng-click="submit()">REGISTER</button>
               </form>
             </div>
             <div class="right"></div>
@@ -64,10 +64,8 @@
                     data : data
                 })
                 .success(function (data, status, headers, config) {
-                    console.log("data returned " ,data);
-                    if (data) {
-                      alert (data.error);
-                    }
+                   if (data == "success")
+                    window.location.href = "/login";
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +

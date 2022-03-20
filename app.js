@@ -6,6 +6,7 @@ const sessions = require('express-session');
 const app = express();
 
 // setting up session middleware
+var oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
     saveUninitialized:true,
@@ -21,7 +22,7 @@ app.use(cookieParser());
 app.use(express.static(__dirname+ '/public'));
 
 // MongoDB setup
-var mongoClient = require("mongodb").MongoClient;
+var mongoclient = require("mongodb").MongoClient;
 var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority"
 
 
@@ -63,24 +64,26 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req,res) => {
-    if (err) throw err;
+
     mongoclient.connect(url, function(err, db) {
         if (err) throw err;
         var enteredEmail = req.body.email;
         var enteredPass = req.body.password;
         var dbo = db.db("wherever_we_go");
-        dbo.collection("user").find({ email : enteredEmail }).toArray( (err, result) => {
+        dbo.collection("users").find({ _id : enteredEmail }).toArray( (err, result) => {
+            console.log(result);
             if (err) throw err;
             
-            if (result.length == 0) res.json( {error : "No such user exists"} );
-            else if (result[0].password != enteredPass) res.json( {error : "Incorrect password"} );
+            if (result.length == 0) res.json( "No such user exists");
+            else if (result[0].password != enteredPass) res.json( "Incorrect password" );
             else if (result[0].password == enteredPass) {
                 session=req.session;
                 session.userid=req.body.email;
-                res.redirect("/");
             }
+            db.close();
+            res.json("success");
         })
-        db.close();
+        
     });
 });
 
@@ -96,7 +99,7 @@ app.post ("/register", (req, res) => {
         var dbo = db.db("wherever_we_go");
         var obj = {
             name : req.body.name,
-            email : req.body.email,
+            _id : req.body.email,
             password : req.body.password,
             state : req.body.state
         };
@@ -106,7 +109,7 @@ app.post ("/register", (req, res) => {
             console.log("1 document inserted");
             db.close();
         });
-        res.redirect('/login');
+        res.json("success");
     });
  
 })

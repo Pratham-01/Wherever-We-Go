@@ -32,10 +32,10 @@
           </div>
           <script>
             var app = angular.module('myApp',[]);
-            app.controller("MyController", function($scope)
+            app.controller("MyController", function($scope, $http)
             {
               $scope.submit = function(){
-                
+              
                 var data = {
                   'email' : $scope.email,
                   'password' : $scope.pass,
@@ -51,6 +51,11 @@
                 })
                 .success(function (data, status, headers, config) {
                     console.log("data returned " ,data);
+                    if (data == "success") {
+                      window.location.href = "/";
+                    }else {
+                      alert(data)
+                    }
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
