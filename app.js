@@ -33,14 +33,7 @@ app.get("/", (req,res) => {
 
 app.get("/blogs", (req, res) => {
 
-    /*
-    // In index.html
-    $http.get("/blogs").success( (response) => {
-        $scope.blogs = response;
-    })
-    
-    */
-    session=req.session;
+    session = req.session;
 
     mongoclient.connect(url, function(err, db) {
         if (err) throw err;
@@ -48,10 +41,9 @@ app.get("/blogs", (req, res) => {
         var dbo = db.db("wherever_we_go");
         dbo.collection("blogs").find({}).toArray( (err, result) => {
             if (err) throw err;
-            if(session.userid)
-                res.json({result : result, session : req.session.userid});
-            else res.json({result : result, session : ''});
+            res.json({result : result});
         })
+        
         db.close();
     });
 })
@@ -120,6 +112,12 @@ app.get('/logout',(req,res) => {
     req.session.destroy();
     res.redirect('/');
 });
+
+app.get('/checkSession', (req, res) => {
+    session = req.session;
+    console.log(session.userid);
+    res.send(session.userid)
+})
 
 
 app.listen(8080);
