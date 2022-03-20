@@ -41,14 +41,14 @@ app.get("/blogs", (req, res) => {
         var dbo = db.db("wherever_we_go");
         dbo.collection("blogs").find({}).toArray( (err, result) => {
             if (err) throw err;
-            res.json({result : result});
+            res.json(result);
         })
-        
-        db.close();
     });
 })
 
-
+app.get("/blog/:id", (req, res) => {
+    res.send("hello");
+})
 
 // Login
 app.get("/login", (req, res) => {

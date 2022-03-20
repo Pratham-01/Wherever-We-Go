@@ -3,6 +3,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
         <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <style>
+            .card {
+                margin: 30px;
+                width: 400px;
+            }
+        </style>
     </head>
 
     <body ng-app = "myApp" ng-controller = "MyController">
@@ -29,11 +38,39 @@
                     <li class="nav-item" ng-hide="user">
                         <a class="nav-link" href="/register">Register</a>
                     </li>
+
+
+                <li class="nav-item">
+                    
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
                 
             </ul>
-            </div>
+        </div>
 
-            <div id="body">
+            <div id="body" class="container">
+
+
+
+                <div id="bloglist">
+                    <div class="card-group">
+                    
+                        <div class="card" ng-repeat="blog in blogs">
+
+                            <a href="/blog/{{ blog._id }}"><img class="card-img-top" src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="Card image cap"></a>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ blog.title }}</h5>
+                                <p class="card-text">{{ blog.city }}, {{ blog.state }}</p>
+                                <div class="card-footer">
+                                    <small class="text-muted">{{ blog.date }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
 
 
 
@@ -68,11 +105,7 @@
                 })
                 .success(function (data, status, headers, config) {
                     console.log("data returned " ,data);
-                    if (data) {
-                      $scope.user = true;
-                    } else {
-                      $scope.user = false;
-                    }
+                    $scope.blogs = data;
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
