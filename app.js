@@ -3,14 +3,23 @@ var bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
 const app = express();
+const path = require('path');
+const fs = require("fs");
+const multer = require("multer");
+const { log } = require("console");
+
+app.set('views', __dirname + '/views');
+//app.engine('html', engine.mustache);
+//app.set('view engine', 'html');
 
 
 // var cors = require('cors');
 // app.use(cors());
 
 var cors = require('cors');
+app.use(cors());
 // use it before all route definitions
-app.use(cors({origin: 'http://localhost:8080'}));
+//app.use(cors({origin: 'http://localhost:8080'}));
 
 /* 
 app.use((req, res, next) => {
@@ -50,8 +59,8 @@ var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?
 
 
 // Home Route
-app.get("/", (req,res) => {
-    res.sendFile(__dirname + "/layout.html");
+app.get("/", (req,res,next) => {
+    res.sendFile(__dirname + "/views/layout.html", {});
 });
 
 app.get('/checksession', (req, res)=>{
@@ -116,7 +125,7 @@ app.get("/requests", (req, res) =>{
 
 // Login
 app.get("/login", (req, res) => {
-    res.sendFile(__dirname+'/login.html');
+    res.sendFile(__dirname+'/views/login.html');
 });
 
 app.post("/login", (req,res) => {
@@ -136,9 +145,10 @@ app.post("/login", (req,res) => {
                 session=req.session;
                 session.userid=[req.body.email, result[0].premium] ;
              //   console.log(session.userid);
+             res.json("success");
             }
             db.close();
-            res.json("success");
+            
         })
         
     });
@@ -147,7 +157,7 @@ app.post("/login", (req,res) => {
 
 // Register
 app.get("/register", (req, res) => {
-    res.sendFile(__dirname+'/register.html');
+    res.sendFile(__dirname+'/views/register.html');
 });
 
 app.post ("/register", (req, res) => {
@@ -180,7 +190,7 @@ app.get('/logout',(req,res) => {
 
 app.get("/blog/:id", (req, res) => {
     var id = req.params.id.toString();
-    res.sendFile(__dirname+'/blog.html');
+    res.sendFile(__dirname+'/views/blog.html');
 });
 // Premium 
 
@@ -242,13 +252,9 @@ app.post("/blog/:id",(req, res) => {
 // https://youtu.be/gQ5ou0G_frw
 
 app.get("/add_blog", (req,res) => {
-    res.sendFile(__dirname + "/add_blog.html");
+    res.sendFile(__dirname + "/views/add_blog.html");
 });
 
-const path = require('path');
-const fs = require("fs");
-const multer = require("multer");
-const { log } = require("console");
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -259,7 +265,6 @@ var storage = multer.diskStorage({
     }
 });
 var upload = multer({ storage: storage });
-
 
 app.post("/add_blog",upload.array("imgs"), (req, res)=>{
    //console.log("bruh : ", req.files); 
@@ -302,16 +307,51 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
     });
 })
 
-// chat
+app.put("/rate/blog/:id", (req, res) => {
 
-app.get("/chat",  (req,res) => {
-    res.sendFile(__dirname + "/chat.html");
+    var blogid = req.params.id.toString();
+
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        var myquery = { _id: ObjectId(blogid) };
+        var newvalues = { $push: { "rating": {"userid":req.body.email, "rate": req.body.rating}} };
+        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            db.close();
+        });
+    });
+    res.json("success");
 });
 
-const client = require('socket.io')(4000).sockets;
+app.put("/comment/blog/:id", (req, res) => {
 
+    var blogid = req.params.id.toString();
+
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        var myquery = { _id: ObjectId(blogid) };
+        var newvalues = { $push: { "comments": {"userid":req.body.email, "text": req.body.text, "date": new Date()}} };
+        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            db.close();
+        });
+    });
+    res.json("success");
+});
+
+
+// chat
+app.get("/chat",  (req,res) => {
+    res.sendFile(__dirname + "/views/chat.html");
+});
+
+const client = require('socket.io')();
 // Connect to mongo
-mongoclient.connect("mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority", function(err, db){
+mongoclient.connect(url, function(err, db){
     if(err){
         throw err;
     }
@@ -369,43 +409,6 @@ mongoclient.connect("mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/where
             });
         });
     });
-});
-
-
-app.put("/rate/blog/:id", (req, res) => {
-
-    var blogid = req.params.id.toString();
-
-    mongoclient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("wherever_we_go");
-        var myquery = { _id: ObjectId(blogid) };
-        var newvalues = { $push: { "rating": {"userid":req.body.email, "rate": req.body.rating}} };
-        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
-            if (err) throw err;
-            console.log("1 document updated");
-            db.close();
-        });
-    });
-    res.json("success");
-});
-
-app.put("/comment/blog/:id", (req, res) => {
-
-    var blogid = req.params.id.toString();
-
-    mongoclient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("wherever_we_go");
-        var myquery = { _id: ObjectId(blogid) };
-        var newvalues = { $push: { "comments": {"userid":req.body.email, "text": req.body.text, "date": new Date()}} };
-        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
-            if (err) throw err;
-            console.log("1 document updated");
-            db.close();
-        });
-    });
-    res.json("success");
 });
 
 app.listen(8080);

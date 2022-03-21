@@ -23,26 +23,8 @@ a
   color: white;
 }
 
-.left {
-  overflow: hidden;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: center;
-  animation-name: left;
-  animation-duration: 1s;
-  animation-fill-mode: both;
-  animation-delay: 1s;
-}
-
-.right {
-  flex: 1;
-  background-color: black;
-  transition: 1s;
-  background-image: url(../images/fort.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+a:hover, a:focus, a:active, a:visited {
+  color: azure;
 }
 
 
@@ -101,37 +83,36 @@ a
 
 .animation {
   animation-name: move;
-  animation-duration: .4s;
+  animation-duration: .2s;
   animation-fill-mode: both;
-  animation-delay: 2s;
 }
 
 .a1 {
-  animation-delay: 2s;
+  animation-delay: 1s;
 }
 
 .a2 {
-  animation-delay: 2.2s;
+  animation-delay: 1.2s;
 }
 
 .a3 {
-  animation-delay: 2.4s;
+  animation-delay: 1.4s;
 }
 
 .a4 {
-  animation-delay: 2.6s;
+  animation-delay: 1.6s;
 }
 
 .a5 {
-  animation-delay: 2.8s;
+  animation-delay: 1.8s;
 }
 
 .a6 {
-  animation-delay: 3.0s;
+  animation-delay: 2.0s;
 }
 
 .a7 {
-  animation-delay: 3.4s;
+  animation-delay: 2.2s;
 }
 
 @keyframes move {
@@ -148,15 +129,60 @@ a
   }
 }
 
-@keyframes left {
-  0% {
-    opacity: 0;
-    width: 0;
-  }
+body {
+  align-items: center;
+  justify-content: center;
+}
 
-  100% {
-    opacity: 1;
-    padding: 20px 40px;
-    width: 440px;
+#logincontainer {
+  margin-left: 10%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#regcontainer {
+  margin-left: 10%;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+#loginimage {
+  margin-top: 80px;
+  height: 430px;
+  border-radius: 20px;
+}
+
+#regimage {
+  margin-top: 130px;
+  height: 530px;
+  border-radius: 20px;
+}
+
+.logincard {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+  border : 2px solid grey;
+  border-radius: 20px;
+  padding: 25px;
+  width: auto;
+  margin-top: 80px;
+  margin-right: 75px;
+  max-height: 430px;
+}
+
+.regcard {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
+  border : 2px solid grey;
+  border-radius: 20px;
+  padding: 25px;
+  width: auto;
+  margin-top: 80px;
+  margin-right: 75px;
+  max-height: 630px;
+}
+
+
+@media screen and (max-width: 700px) {
+  #loginimage {
+      display: none;
   }
 }

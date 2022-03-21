@@ -7,14 +7,15 @@
 
     <body ng-app = "myApp" ng-controller = "MyController">
         <div class="container">
-            <div class="left">
+            <div class="regcontainer">
+              <div class="regcard">
               <div class="header">
                 <h2 class="animation a1">Welcome to Wherever We Go!</h2>
                 <h4 class="animation a2">Create a new account using your Email ID and Password</h4>
               </div>
-              <form name = "form" class="form">
+              <form name = "form" class="form" ng-submit="submit()">
 
-                <input type="name" class="form-field animation a3" placeholder = "Enter Name" name="name" id="name" ng-model="name" ng-required = "true" autofocus>
+                <input type="name" class="form-field animation a3" placeholder = "Enter Name" name="name" id="name" ng-model="name" ng-required="true" autofocus>
                 <br>
 
                 <input type="email" placeholder="Email Address" id="email" class="form-field animation a4" ng-model="email" name="email" ng-required="true" ng-pattern="/^[a-z0-9/_$#%]+@[a-z]+[.]+[a-z]+$/">
@@ -32,10 +33,11 @@
                 <br>
                 <div class="header"><h4 class="animation a7">Already Registered?<a href="/login">Sign in Here</a></h4></div>
                 <br>
-                <button class="animation a6" style="color: black; font-size: 18px;" ng-click="submit()">REGISTER</button>
+                <button class="animation a6" style="color: black; font-size: 18px;">REGISTER</button>
               </form>
             </div>
-            <div class="right"></div>
+            </div>
+            <img src="../images/vector2.jpg" alt="login" id="regimage"> 
           </div>
           <script>
             var app = angular.module('myApp',[]);
@@ -47,6 +49,10 @@
             ];  
               $scope.selectedOption = "Where do you come from?";
               $scope.submit = function(){
+
+                if($scope.pass == null || $scope.selectedOption == "Where do you come from?"){
+                  alert("Fill in All Details Correctly");
+                }else{
                 
                 var data = {
                   'name' : $scope.name,
@@ -60,12 +66,12 @@
 
                 $http({
                     method : "POST",
-                    url : "/upload",
+                    url : "/register",
                     data : data
                 })
                 .success(function (data, status, headers, config) {
                    if (data == "success")
-                    window.location.href = "/";
+                    window.location.href = "/login";
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
@@ -74,7 +80,7 @@
                         "<hr />config: " + config;
                 });
 
-              } //submit
+              } }//submit
                 });   // controller
           </script>
         
