@@ -13,7 +13,7 @@
                 <h4 class="animation a2">Log In to your Account using Email and Password</h4>
               </div>
               <form name = "form" class="form">
-                <input type="email" placeholder="Email Address" id="email" class="form-field animation a3" ng-model="email" name="email" ng-required="true" ng-pattern="/^[a-z0-9/_$#%]+@[a-z]+[.]+[a-z]+$/">
+                <input type="email" placeholder="Email Address" id="email" class="form-field animation a3" ng-model="email" name="email" ng-required="true" ng-pattern="/^[a-z0-9/_$#%]+@[a-z]+[.]+[a-z]+$/" autofocus>
                   <small class="error" ng-if="form.email.$touched && form.email.$error.pattern"><br />Email has to be in format abc@gmail.com</small>
                 <br>
 
