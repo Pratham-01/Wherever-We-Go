@@ -18,10 +18,13 @@
   "homepage": "https://github.com/Pratham-01/Wherever-We-Go#readme",
   "dependencies": {
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
+    "http": "^0.0.1-security",
     "mongodb": "^4.4.1",
-    "multer": "^1.4.4"
+    "multer": "^1.4.4",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

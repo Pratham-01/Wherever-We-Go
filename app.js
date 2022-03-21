@@ -4,6 +4,28 @@ const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
 const app = express();
 
+
+// var cors = require('cors');
+// app.use(cors());
+
+var cors = require('cors');
+// use it before all route definitions
+app.use(cors({origin: 'http://localhost:8080'}));
+
+/* 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+  });
+   */
+
 var ObjectId = require('mongodb').ObjectId; 
 
 // setting up session middleware
@@ -207,9 +229,11 @@ app.post("/blog/:id",(req, res) => {
         });
     });
 })
-// express mongodb cookie-parser express-session multer fs path 
+// express mongodb cookie-parser express-session multer fs path socket.io
 
 // Insert blog
+
+// https://youtu.be/gQ5ou0G_frw
 
 app.get("/add_blog", (req,res) => {
     res.sendFile(__dirname + "/add_blog.html");
@@ -271,5 +295,77 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
         res.redirect("/")
     });
 })
+
+
+
+// chat
+
+app.get("/chat",  (req,res) => {
+    res.sendFile(__dirname + "/chat.html");
+});
+
+const client = require('socket.io')(4000).sockets;
+
+// Connect to mongo
+mongoclient.connect("mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority", function(err, db){
+    if(err){
+        throw err;
+    }
+
+    console.log('MongoDB connected...');
+
+    // Connect to Socket.io
+    client.on('connection', function(socket){
+        let chat = db.collection('chats');
+
+        // Create function to send status
+        sendStatus = function(s){
+            socket.emit('status', s);
+        }
+
+        // Get chats from mongo collection
+        chat.find().limit(100).sort({_id:1}).toArray(function(err, res){
+            if(err){
+                throw err;
+            }
+
+            // Emit the messages
+            socket.emit('output', res);
+        });
+
+        // Handle input events
+        socket.on('input', function(data){
+            let name = data.name;
+            let message = data.message;
+
+            // Check for name and message
+            if(name == '' || message == ''){
+                // Send error status
+                sendStatus('Please enter a name and message');
+            } else {
+                // Insert message
+                chat.insert({name: name, message: message}, function(){
+                    client.emit('output', [data]);
+
+                    // Send status object
+                    sendStatus({
+                        message: 'Message sent',
+                        clear: true
+                    });
+                });
+            }
+        });
+
+        // Handle clear
+        socket.on('clear', function(data){
+            // Remove all chats from collection
+            chat.remove({}, function(){
+                // Emit cleared
+                socket.emit('cleared');
+            });
+        });
+    });
+});
+
 
 app.listen(8080);
