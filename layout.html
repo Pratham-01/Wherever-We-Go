@@ -41,13 +41,24 @@
 
 
                 <li class="nav-item">
-                    <select ng-model="cityfilter" ng-options="blog.city as blog.city for blog in blogs">
+                    <select ng-model="cityfilter" ng-change="setcityfilter()">
                         <option value="">Choose City</option>
+                        <option value="{{ city }}" ng-repeat="city in cities">{{ city }}</option>
                     </select>
                 </li>
                 <li class="nav-item">
-                    <select ng-model="statefilter" ng-options="blog.state as blog.state for blog in blogs">
-                        <option value="" selected>Choose State</option>
+                    <select ng-model="statefilter" ng-change="setstatefilter()">
+                        <option value="">Choose State</option>
+                        <option value="{{ state }}" ng-repeat="state in states">{{ state }}</option>
+                    </select>
+                </li>
+                <li class="nav-item">
+                    <select ng-model="sortby" ng-change="">
+                        <option value="">Sort By</option>
+                        <option value="title">Title</option>
+                        <option value="city">City</option>
+                        <option value="state">State</option>
+                        <option value="date">Newest First</option> 
                     </select>
                 </li>
                 
@@ -56,19 +67,17 @@
 
             <div id="body" class="container">
 
-
-
                 <div id="bloglist">
                     <div class="card-group">
                     
-                        <div class="card" ng-repeat="blog in blogs | filter :{'city' : cityfilter, 'state': statefilter}">
+                        <div class="card" ng-repeat="blog in blogs | filter :{'city' : cityfilter, 'state': statefilter} | orderBy: sortby">
 
                             <a href="/blog/{{ blog._id }}"><img class="card-img-top" src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="Card image cap"></a>
                             <div class="card-body">
                                 <h5 class="card-title">{{ blog.title }}</h5>
                                 <p class="card-text">{{ blog.city }}, {{ blog.state }}</p>
                                 <div class="card-footer">
-                                    <small class="text-muted">{{ blog.date }}</small>
+                                    <small class="text-muted">{{ blog.date | date}}</small>
                                 </div>
                             </div>
                         </div>
@@ -82,8 +91,18 @@
     </body>
     
     <script>
+
             var app = angular.module('myApp',[]);
             app.controller("MyController", function($scope, $http) {
+
+                $scope.setcityfilter = () => {
+                    $scope.statefilter = ""
+                }
+                $scope.setstatefilter = () => {
+                    $scope.cityfilter = ""
+                }
+
+
                 $http({
                     method : "GET",
                     url : "/checkSession"
@@ -108,8 +127,19 @@
                     url : "/blogs"
                 })
                 .success(function (data, status, headers, config) {
-                    console.log("data returned " ,data);
                     $scope.blogs = data;
+
+                    $scope.cities= [];
+                    $scope.states= [];
+
+                    $scope.blogs.forEach(blog => {
+                        if ($scope.cities.indexOf(blog.city) === -1) {
+                            $scope.cities.push(blog.city);
+                        }
+                        if ($scope.states.indexOf(blog.state) === -1) {
+                            $scope.states.push(blog.state);
+                        }
+                    });
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
@@ -117,7 +147,9 @@
                         "<hr />headers: " + header +
                         "<hr />config: " + config;
                 });
+
             });
+            
           </script>
 
 </html>
