@@ -9,7 +9,9 @@
         <style>
             .card {
                 margin: 30px;
-                width: 400px;
+                min-width: 250px;
+                max-width: 350px;
+                width: 28%;
             }
         </style>
     </head>
@@ -88,7 +90,7 @@
                         <option value="title">Title</option>
                         <option value="city">City</option>
                         <option value="state">State</option>
-                        <option value="date">Newest First</option> 
+                        <option value="-date">Newest First</option> 
                     </select>
                 </li>
                 
@@ -97,26 +99,21 @@
 
             <div id="body" class="container">
 
-                <div id="bloglist">
-                    <div class="card-group">
-                    
-                        <div class="card" ng-repeat="blog in blogs | filter :{'city' : cityfilter, 'state': statefilter} | orderBy: sortby">
+                <div class="card-group">
+                
+                    <div class="card" ng-repeat="blog in blogs | filter :{'city' : cityfilter, 'state': statefilter} | orderBy: sortby">
 
-                            <a href="/blog/{{ blog._id }}"><img class="card-img-top" src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="Card image cap"></a>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ blog.title }}</h5>
-                                <p class="card-text">{{ blog.city }}, {{ blog.state }}</p>
-                                <div class="card-footer">
-                                    <small class="text-muted">{{ blog.date | date}}</small>
-                                </div>
+                        <a href="/blog/{{ blog._id }}"><img class="card-img-top" src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="Card image cap"></a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ blog.title }}</h5>
+                            <p class="card-text">{{ blog.city }}, {{ blog.state }}</p>
+                            <div class="card-footer">
+                                <small class="text-muted">{{ blog.date | date}}</small>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
-
-
-
+                    
             </div>
     </body>
     

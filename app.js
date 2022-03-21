@@ -2,8 +2,9 @@ const express = require("express");
 var bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
-
 const app = express();
+
+var ObjectId = require('mongodb').ObjectId; 
 
 // setting up session middleware
 var oneDay = 1000 * 60 * 60 * 24;
@@ -149,10 +150,9 @@ app.get('/logout',(req,res) => {
 });
 
 app.get("/blog/:id", (req, res) => {
-    res.send("hello");
+    var id = req.params.id.toString();
+    res.sendFile(__dirname+'/blog.html');
 });
-
-
 // Premium 
 
 app.get("/prem_apply", (req, res) => {
@@ -192,8 +192,21 @@ app.post("/accept_req", (req, res) => {
 })
 
 
+app.post("/blog/:id",(req, res) => {
 
+    var id = req.params.id.toString();
 
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("wherever_we_go");
+        dbo.collection("blogs").find({_id: ObjectId(id)}).toArray( (err, result) => {
+            if (err) throw err;
+            console.log(id, result);
+            res.send(result);
+        });
+    });
+})
 // express mongodb cookie-parser express-session multer fs path 
 
 // Insert blog
@@ -237,7 +250,7 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
         if (err) throw err;
         var dbo = db.db("wherever_we_go");
         var today = new Date();
-        var todaysdate = today.getDate()+"-"+today.getMonth()+"-"+today.getFullYear();
+        //var todaysdate = today.getDate()+"-"+today.getMonth()+"-"+today.getFullYear();
         var state = req.body.state.slice(7);
         var obj = {
             title : req.body.title,
@@ -245,7 +258,7 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
             state : state,
             city : req.body.city,
             imgs : imgs,
-            date : todaysdate,
+            date : today,
             rating : [],
             comments : [],
         };
