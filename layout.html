@@ -48,10 +48,10 @@
 
                     
                     <!-- Premium -->
-                    <li class="nav-item" ng-show="premium">
+                    <li class="nav-item" ng-show="premium==true || admin==true">
                         <a class="nav-link" href="/chat">Chat</a>
                     </li>
-                    <li class="nav-item" ng-show="user==true && premium==false && reqExist == false">
+                    <li class="nav-item" ng-show="user==true && premium==false && reqExist == false && admin==false">
                         <a class="nav-link" href="/prem_apply">Apply for premium</a>
                     </li>
                     <li class="nav-item" ng-show="user==true && premium==false && reqExist == true">
@@ -129,7 +129,7 @@
                     $scope.cityfilter = ""
                 }
 
-                $scope.user = false, $scope.admin=false, $scope.premium = false;
+                $scope.user = false, $scope.admin=false, $scope.premium = false, $scope.reqExist = false;
                 $scope.requests = [];
                  
                 $http({
@@ -143,7 +143,7 @@
                       $scope.user = true;
                       
                       // IS ADMIN
-                      if (data.sessions[0] == "000") $scope.admin = true;
+                      if (data.sessions[0] == "000@wwg.com") $scope.admin = true;
                       else $scope.admin = false;
 
                       // Premium
@@ -168,6 +168,9 @@
                             $scope.states.push(blog.state);
                         }
                     });
+
+                    console.log($scope.user, $scope.admin, $scope.premium, $scope.reqExist);
+
 
                 })
                 .error(function (data, status, header, config) {
@@ -198,6 +201,7 @@
                         "<hr />config: " + config;
                 });
 
+                
             });
             
           </script>

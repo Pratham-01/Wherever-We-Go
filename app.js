@@ -54,6 +54,13 @@ app.get("/", (req,res) => {
     res.sendFile(__dirname + "/layout.html");
 });
 
+app.get('/checksession', (req, res)=>{
+    var returnObj = {};
+    session = req.session;
+    console.log(session.userid);
+    returnObj.sessions = session.userid ? session.userid : null;
+    res.json(returnObj);
+})
 
 app.get('/index', (req, res) => {
     var returnObj = {};
@@ -69,14 +76,14 @@ app.get('/index', (req, res) => {
             if (err) throw err;
             returnObj.blogs = result;
             res.json(returnObj);
-        });    
+        });
     })    
 });
 
 app.get("/requests", (req, res) =>{
     session = req.session;
     if (session.userid){
-        if (session.userid[0] == "000"){
+        if (session.userid[0] == "000@wwg.com"){
             mongoclient.connect(url, function(err, db) {
                 if (err) throw err;
         
@@ -92,7 +99,7 @@ app.get("/requests", (req, res) =>{
                 if (err) throw err;
                 session = req.session;
                 var dbo = db.db("wherever_we_go");
-                dbo.collection("premium_requests").find({_id : session.userid[0]}).toArray( (err, result) => {
+                dbo.collection("premium_requests").find({userid : session.userid[0]}).toArray( (err, result) => {
                     if (err) throw err;
                     if (result.length == 0){
                         res.json("0");
@@ -224,7 +231,6 @@ app.post("/blog/:id",(req, res) => {
         var dbo = db.db("wherever_we_go");
         dbo.collection("blogs").find({_id: ObjectId(id)}).toArray( (err, result) => {
             if (err) throw err;
-            console.log(id, result);
             res.send(result);
         });
     });
@@ -296,8 +302,6 @@ app.post("/add_blog",upload.array("imgs"), (req, res)=>{
     });
 })
 
-
-
 // chat
 
 app.get("/chat",  (req,res) => {
@@ -367,5 +371,41 @@ mongoclient.connect("mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/where
     });
 });
 
+
+app.put("/rate/blog/:id", (req, res) => {
+
+    var blogid = req.params.id.toString();
+
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        var myquery = { _id: ObjectId(blogid) };
+        var newvalues = { $push: { "rating": {"userid":req.body.email, "rate": req.body.rating}} };
+        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            db.close();
+        });
+    });
+    res.json("success");
+});
+
+app.put("/comment/blog/:id", (req, res) => {
+
+    var blogid = req.params.id.toString();
+
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        var myquery = { _id: ObjectId(blogid) };
+        var newvalues = { $push: { "comments": {"userid":req.body.email, "text": req.body.text, "date": new Date()}} };
+        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+            console.log("1 document updated");
+            db.close();
+        });
+    });
+    res.json("success");
+});
 
 app.listen(8080);

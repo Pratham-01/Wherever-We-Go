@@ -25,7 +25,7 @@
                         <a class="nav-link" href="/logout">Log Out</a>
                     </li>
                     <li class="nav-item" ng-show="user">
-                        <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
+                        <a class="nav-link" href="">Signed in as <strong>{{ userid }}</strong></a>
                     </li> 
                 
                     <li class="nav-item" ng-hide="user">
@@ -42,7 +42,11 @@
 
                 <h1>{{ blog.title }}</h1>
                 <img  src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="image" width="600px">
-                <div>{{ blog.content }}</div>
+                <div>{{ content }}</div>
+
+                <span ng-hide="user">
+                    <a class="nav-link" href="/register">...Sign Up to read Full Blog</a>
+                </span>
 
                 <img  src="data:image/png;base64,{{ blog.imgs[1].image }}" alt="image" width="600px">
 
@@ -54,14 +58,10 @@
                 </div>
 
                 <div>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
+                    {{ frating }}<span class="fa fa-star checked"></span> ( {{ num }} ratings )
                 </div>
 
-                <form ng-show="user">
+                <form ng-show="user && rated==false" ng-submit="rate()">
 
                     <span class="star-rating">
                         <input type="radio" name="rating1" value="1"><i></i>
@@ -74,6 +74,22 @@
                     <button type="submit" class="btn btn-sm btn-warning">Rate</button>
                 </form>
 
+                <div ng-show="rated">
+                    Your Rating: {{ myrate }} <span class="fa fa-star checked"></span>
+                </div>
+
+                <h4>Comments</h4>
+
+                <form ng-show="user && comed==false" ng-submit="comment()">
+                    <textarea id="commtext"></textarea>
+                    <button type="submit" class="btn btn-sm btn-warning">Post</button>
+                </form>
+                
+                <ul id="comments">
+                    <li  ng-repeat="comment in blog.comments">
+                        {{ comment.userid }}: {{ comment.text }}
+                    </li>
+                </ul>
                     
             </div>
     </body>
@@ -83,18 +99,94 @@
             var app = angular.module('myApp',[]);
             app.controller("MyController", function($scope, $http) {
 
+                $scope.user = false, $scope.admin = false, $scope.premium=false, $scope.reqExist = false, $scope.rated = false, $scope.comed=false;
+
+                $scope.rate = () => {
+                    var ele = document.getElementsByName('rating1');
+              
+                    for(i = 0; i < ele.length; i++) {
+                        if(ele[i].checked)
+                            $scope.rating = ele[i].value;
+                    }
+
+                    var data = {
+                        'email' : $scope.userid,
+                        'rating' : $scope.rating
+                    };
+
+                    $http({
+                        method: 'PUT',
+                        url: "/rate" + window.location.pathname,
+                        //headers: {"Content-Type": "application/json;charset=UTF-8"},
+                        data: data
+                    })
+                    .success(function (data, status, headers, config) {
+                    if (data == "success")
+                        console.log("rated");
+                        window.location.reload();
+                    })
+                    .error(function (data, status, header, config) {
+                        console.log(data)
+                        $scope.ResponseDetails = "Data: " + data +
+                            "<hr />status: " + status +
+                            "<hr />headers: " + header +
+                            "<hr />config: " + config;
+                    });
+                };
+
+                $scope.comment = () => {
+                    var ele = document.getElementById('commtext').value;
+
+                    var data = {
+                        'email' : $scope.userid,
+                        'text' : ele
+                    };
+
+                    $http({
+                        method: 'PUT',
+                        url: "/comment" + window.location.pathname,
+                        //headers: {"Content-Type": "application/json;charset=UTF-8"},
+                        data: data
+                    })
+                    .success(function (data, status, headers, config) {
+                    if (data == "success")
+                        console.log("comment posted");
+                        window.location.reload();
+                    })
+                    .error(function (data, status, header, config) {
+                        console.log(data)
+                        $scope.ResponseDetails = "Data: " + data +
+                            "<hr />status: " + status +
+                            "<hr />headers: " + header +
+                            "<hr />config: " + config;
+                    });
+                };
+
 
                 $http({
                     method : "GET",
-                    url : "/checkSession"
+                    url : "/checksession"
                 })
                 .success(function (data, status, headers, config) {
-                    console.log("data returned ",data);
-                    if (data) {
+                    console.log("data returned ", data);
+                    if (data.sessions != null) {
+                        
                       $scope.user = true;
+                      $scope.userid = data.sessions[0];
+                      
+                      // IS ADMIN
+                      if (data.sessions[0] == "000@wwg.com") $scope.admin = true;
+                      else $scope.admin = false;
+
+                      // Premium
+                      if(data.sessions[1] == "true") $scope.premium = true;
+                      else $scope.premium = false;
+
                     } else {
-                      $scope.user = false;
+                      $scope.user = false, $scope.admin = false, $scope.premium=false, $scope.reqExist = false, $scope.rated = false;
                     }
+
+                    
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
@@ -103,13 +195,41 @@
                         "<hr />config: " + config;
                 });
 
-            $http({
+                $http({
                     method : "POST",
                     url : window.location.pathname
                 })
                 .success(function (data, status, headers, config) {
                     console.log("data returned ", data);
                     $scope.blog = data[0];
+
+                    var length = $scope.blog.content.length;
+                    if($scope.user) {
+                        console.log("true: ", $scope.user);
+                        $scope.content = $scope.blog.content;
+                    } else {
+                        console.log("false:" ,$scope.user);
+                        $scope.content = $scope.blog.content.slice(0, length/2);
+                    }
+
+                    $scope.num = 0;
+                    $scope.frating = 0;
+                    $scope.blog.rating.forEach(element => {
+                        console.log(element.userid, $scope.userid);
+                        if (element.userid == $scope.userid){
+                            $scope.rated = true;
+                            $scope.myrate = element.rate;
+                            console.log("here: ", $scope.myrate)
+                        }
+                        $scope.num += 1;
+                        $scope.frating += Number(element.rate);
+                    });
+                    if ($scope.num !== 0){
+                        $scope.frating /= $scope.num;
+                    } else {
+                        $scope.frating = '-';
+                    }
+                    
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
@@ -117,7 +237,6 @@
                         "<hr />headers: " + header +
                         "<hr />config: " + config;
                 });
-
             });
             
           </script>
