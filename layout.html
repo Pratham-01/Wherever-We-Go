@@ -58,12 +58,14 @@
 
                     <details ng-show="admin">
                         <summary>Requests</summary>
-                        <div ng-repeat="x in requests">
-                            <label for="{{x.userid}}">{{x.userid}}</label>
-                            <input type="checkbox" name="requests" value="{{x.userid}}">
-                            <br>
-                        </div>
-                        <button>Accept</button>
+                        <form>
+                            <div ng-repeat="x in requests">
+                                <label for="{{x.userid}}">{{x.userid}}</label>
+                                <input type="checkbox" name="requests" value="{{x.userid}}">
+                                <br>
+                            </div>
+                            <button>Accept</button>
+                        </form>
                     </details>
 
 

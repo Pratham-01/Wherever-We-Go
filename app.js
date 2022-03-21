@@ -80,7 +80,6 @@ app.get("/requests", (req, res) =>{
             })
         }
     }else res.json("0");
-    
 })
 
 
@@ -176,6 +175,20 @@ app.get("/prem_apply", (req, res) => {
     });
 
     res.redirect("/");
+});
+
+app.post("/accept_req", (req, res) => {
+    var ids = req.body.requests;
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        dbo.collection("premium_requests").deleteMany( { userid : { $in: ids }} , function(err, result) {
+            if (err) throw err;
+            console.log(result);
+            db.close();
+        });
+        // dbo.collection("users").updateMany({ _id : { $in: ids }},  )
+    });
 })
 
 
