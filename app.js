@@ -56,7 +56,7 @@ app.use(express.static(__dirname+ '/public'));
 // MongoDB setup
 var mongoclient = require("mongodb").MongoClient;
 //var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority"
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://127.0.0.1:27017/";
 
 
 // Home Route
@@ -98,7 +98,7 @@ app.get("/requests", (req, res) =>{
                 if (err) throw err;
         
                 var dbo = db.db("wherever_we_go");
-                dbo.collection("premium_requests").find({}).toArray( (err, result) => {
+                dbo.collection("premium_requests").find({status: false}).toArray( (err, result) => {
                     if (err) throw err;
                     res.json(result);
                 });
@@ -114,7 +114,12 @@ app.get("/requests", (req, res) =>{
                     if (result.length == 0){
                         res.json("0");
                     }else{
-                        res.json("exists");
+                        if (result[0].status == false){
+                            res.json("exists");
+                        }
+                        else {
+                            res.json("rejected");
+                        }
                     }
                 });
             })
@@ -145,7 +150,7 @@ app.post("/login", (req,res) => {
                 session=req.session;
 
                 session.userid=[req.body.email, result[0].premium, result[0].name] ;
-             //   console.log(session.userid);
+                console.log(session.userid);
 
              res.json("success");
             }
@@ -217,20 +222,6 @@ app.get("/prem_apply", (req, res) => {
 
     res.redirect("/");
 });
-
-app.post("/accept_req", (req, res) => {
-    var ids = req.body.requests;
-    mongoclient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("wherever_we_go");
-        dbo.collection("premium_requests").deleteMany( { userid : { $in: ids }} , function(err, result) {
-            if (err) throw err;
-            console.log(result);
-            db.close();
-        });
-        // dbo.collection("users").updateMany({ _id : { $in: ids }},  )
-    });
-})
 
 
 app.post("/blog/:id",(req, res) => {
@@ -316,7 +307,7 @@ app.put("/rate/blog/:id", (req, res) => {
     mongoclient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("wherever_we_go");
-        var myquery = { _id: ObjectId(blogid) };
+        var myquery = {_id: ObjectId(blogid)};
         var newvalues = { $push: { "rating": {"userid":req.body.email, "rate": req.body.rating}} };
         dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
             if (err) throw err;
@@ -362,6 +353,52 @@ app.put("/pin/blog/:id", (req, res) => {
             db.close();
         });
     });
+    res.json("success");
+});
+
+app.put("/accDeny", (req, res) => {
+
+    console.log(req.body);
+
+    if(req.body.status){
+        mongoclient.connect(url, function(err, db) {
+            if (err) throw err;
+            var dbo = db.db("wherever_we_go");
+            var myquery = { _id: { $in: req.body.users }};
+            var newvalues = {$set: {premium: req.body.status }};
+            dbo.collection("users").updateMany(myquery, newvalues, function(err, res) {
+                if (err) throw err;
+                console.log("document(s) updated");
+                db.close();
+            });
+        });
+
+        mongoclient.connect(url, function(err, db) {
+            if (err) throw err;
+            var dbo = db.db("wherever_we_go");
+
+            var myquery = { userid: { $in: req.body.users }};
+            dbo.collection("premium_requests").deleteMany(myquery, function(err, res) {
+                if (err) throw err;
+                console.log("document(s) updated");
+                db.close();
+            });
+        });
+
+    } else {
+        mongoclient.connect(url, function(err, db) {
+            if (err) throw err;
+            var dbo = db.db("wherever_we_go");
+            var myquery = { userid: { $in: req.body.users }};
+            var newvalues = {$set: {status: true }};
+            dbo.collection("premium_requests").updateMany(myquery, newvalues, function(err, res) {
+                if (err) throw err;
+                console.log("document(s) updated");
+            });
+              
+        });
+    }
+    
     res.json("success");
 });
 

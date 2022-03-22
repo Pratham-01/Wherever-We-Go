@@ -80,27 +80,32 @@
                     <h5 class="text-muted text-center">Admin</h5>
                     <a href="/add_blog" class="my-3 btn btn-primary btn-lg active w-100" >Add Blog</a>
                     
-                    <details class="si">
+                    <details ng-show="admin" class="si">
                         <summary class="  btn btn-secondary btn-lg">Requests</summary>
                         <form>
                             <div ng-repeat="x in requests">
                                 <label for="{{x.userid}}">{{x.userid}}</label>
-                                <input type="checkbox" name="requests" value="{{x.userid}}">
+                                <input type="checkbox" name="requests" value="{{x.userid}}" ng-model="typeValues[x.userid]">
                                 <br>
                             </div>
-                            <button class="btn btn-sm btn-danger">Accept</button>
+                            <button type="submit" class="btn btn-sm btn-danger" ng-click="request(true)">Accept</button>
+                            <button type="submit" class="btn btn-sm btn-danger" ng-click="request(false)">Reject</button>
                         </form>
                     </details>
+                    
                 </div>
 
                 <div ng-show="user==true && admin==false">
                     <hr>
                     <h5 class="text-muted text-center">Premium</h5>
-                    <div class="" ng-show="user==true && premium==false && reqExist == false && admin==false">
+                    <div class="" ng-show="user==true && premium==false && reqExist == false && admin==false && rejected== false">
                         <a href="/prem_apply">Apply for premium</a>
                     </div>
                     <div class="text-center" ng-show="user==true && premium==false && reqExist == true">
                         <span class="">Pending Premium Membership Request</span>
+                    </div>
+                    <div class="text-center" ng-show="user==true && premium==false && rejected== true">
+                        <span class="">Rejected</span>
                     </div>
                 </div>
     
@@ -129,8 +134,40 @@
     
     <script>
 
+
             var app = angular.module('myApp',[]);
             app.controller("MyController", function($scope, $http) {
+
+                $scope.typeValues = {};
+
+                $scope.request = (status) => {
+                    console.log($scope.typeValues);
+                    console.log( typeof($scope.typeValues));
+
+                    var data = {
+                        'users' : Object.keys($scope.typeValues),
+                        'status': status
+                    };
+                    console.log("data: ", data);
+
+                    $http({
+                        method: 'PUT',
+                        url: "/accDeny",
+                        data: data
+                    })
+                    .success(function (data, status, headers, config) {
+                    if (data == "success")
+                        console.log("done");
+                        window.location.reload();
+                    })
+                    .error(function (data, status, header, config) {
+                        console.log(data)
+                        $scope.ResponseDetails = "Data: " + data +
+                            "<hr />status: " + status +
+                            "<hr />headers: " + header +
+                            "<hr />config: " + config;
+                    });
+                }
 
                 $scope.setcityfilter = () => {
                     $scope.statefilter = ""
@@ -139,8 +176,8 @@
                     $scope.cityfilter = ""
                 }
 
-                $scope.user = false, $scope.admin=false, $scope.premium = false, $scope.reqExist = false;
-                $scope.name
+                $scope.name = '';
+                $scope.user = false, $scope.admin=false, $scope.premium = false, $scope.reqExist = false, $scope.rejected = false;
                 $scope.requests = [];
                  
                 $http({
@@ -159,7 +196,7 @@
                       else $scope.admin = false;
 
                       // Premium
-                      if(data.sessions[1] == "true") $scope.premium = true;
+                      if(data.sessions[1] == true) $scope.premium = true;
                       else $scope.premium = false;
 
                     } else {
@@ -181,7 +218,7 @@
                         }
                     });
 
-                    console.log($scope.user, $scope.admin, $scope.premium, $scope.reqExist);
+                    console.log("yaha: ", $scope.user, $scope.admin, $scope.premium, $scope.reqExist, $scope.rejected);
 
 
                 })
@@ -201,10 +238,15 @@
                     if (data === "0"){    
                     }else if (data === "exists"){
                         $scope.reqExist = true;
+                    }
+                    else if (data === "rejected"){
+                        $scope.rejected = true;
                     }else{
                         console.log("reqs: ", data);
                         $scope.requests = data;
                     }
+
+                    console.log("idhar: ", $scope.reqExist, $scope.rejected);
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data +
