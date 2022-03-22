@@ -93,7 +93,7 @@
                       else {$scope.admin = false; $scope.name = data.sessions[2];}
 
                         // IS Premium
-                        if(data.sessions[1] == "true" && $scope.admin==false) {$scope.premium = true;}
+                        if(data.sessions[1] == "true" || $scope.admin==true) {$scope.premium = true;}
                         else {window.location.href="/";}
 
                     } else {
