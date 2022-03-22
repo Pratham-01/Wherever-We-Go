@@ -6,42 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
-
+    <link rel="stylesheet" href="/css/navbar.css" type="text/css">
+    <link rel="stylesheet" href="/css/chat.css" type="text/css">
     <title>Chat</title>
-    <style>
-        .card-block{
-            overflow-y: scroll;
-        }
-        #messages{height:300px;}
-        nav{
-            border-bottom: 1px solid rgba(0,0,0,0.2);
-            box-shadow: 10px 10px 15px rgba(200,200,200,0.50);
-        }
-        .message{
-            border-radius: 5px;
-            border : 1px solid rgba(0,0,0,0.2);
-            width: fit-content;
-            padding: 5px;
-            margin-top : 3px;
-            min-width: 25%;
-        }
-        .ownmsg{
-            display: flex;
-            justify-content: end;
-        }
-        .author{
-            font-size:x-small;
-            padding-left: 5px ;
-        }
-        .msgText{
-            padding-left: 10px ;
-        }
-       
-    </style>
 </head>
+
 <body class="" ng-app="chat" ng-controller="mainController">
 
-    <nav class="py-0 mb-5 d-flex flex-row bg-dark navbar navbar-expand-lg">
+    <nav class="py-0 mb-5 d-flex flex-row navbar navbar-expand-lg navbar-light bg-light">
         <div class="w-25">
             <a  href="/"><img src="../images/Picture1.png" alt="login" class="w-75" style="padding: 0; margin: 0;"> </a>
         </div>  
@@ -89,7 +61,7 @@
                   <!--   <input type="text" id="username" class="form-control" placeholder="Enter name...">
                     <br> -->
                     <div class="card">
-                        <div ng-model="messages" id="messages" class="card-block d-flex flex-column">
+                        <div ng-model="messages" id="messages" class="h-75 card-block d-flex flex-column">
                             
                         </div>
                     </div>

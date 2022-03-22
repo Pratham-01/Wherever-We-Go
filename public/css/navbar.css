@@ -1,0 +1,8 @@
+nav{
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    box-shadow: 10px 10px 15px rgba(200,200,200,0.50);
+}
+nav a{
+  color: #0275d8 !important;
+  font-size: large;
+}
