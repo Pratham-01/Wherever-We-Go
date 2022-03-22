@@ -91,8 +91,13 @@
                       // IS ADMIN
                       if (data.sessions[0] == "000@wwg.com") {$scope.admin = true; $scope.name = "admin"}
                       else {$scope.admin = false; $scope.name = data.sessions[2];}
+
+                        // IS Premium
+                        if(data.sessions[1] == "true" && $scope.admin==false) {$scope.premium = true;}
+                        else {window.location.href="/";}
+
                     } else {
-                      $scope.user = false, $scope.admin = false;
+                      window.location.href="/";
                     }
 
                     console.log($scope.user, $scope.admin);
