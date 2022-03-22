@@ -5,30 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <title>MongoChat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+
+    <title>Chat</title>
     <style>
         #messages{height:300px;}
+        nav{
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            box-shadow: 10px 10px 15px rgba(200,200,200,0.50);
+        }
+        .message{
+            border-radius: 5px;
+            border : 1px solid rgba(0,0,0,0.2);
+            width: fit-content;
+            padding: 5px;
+            margin-top : 3px;
+            min-width: 25%;
+        }
+        .ownmsg{
+            display: flex;
+            justify-content: end;
+        }
+        .author{
+            font-size:x-small;
+            padding-left: 5px ;
+        }
+        .msgText{
+            padding-left: 10px ;
+        }
+       
     </style>
 </head>
-<body>
+<body class="" ng-app="chat" ng-controller="mainController">
+
+    <nav class="py-0 mb-5 d-flex flex-row bg-dark navbar navbar-expand-lg">
+        <div class="w-25">
+            <a  href="/"><img src="../images/Picture1.png" alt="login" class="w-75" style="padding: 0; margin: 0;"> </a>
+        </div>  
+        <ul class="d-flex flex-row nav nav-pills navbar">
+                            
+            <li class="mr-2 nav-item d-flex align-items-center">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+
+            <!-- Premium -->
+         
+            <li>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
+                    <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
+                </li> 
+
+                <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
+                    <a class="nav-link" href="/logout">Log Out</a>
+                </li>
+            </li>
+
+            <li>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
+                    <a class="nav-link" href="/login">Log In</a>
+                </li>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+            </li>
+            
+            
+        </ul>
+    </nav>
+
     <div class="container">
         <div class="row">
-            <div class="col-md-6 offset-md-3 col-sm-12">
-                <h1 class="text-center">
-                    MongoChat 
-                    <button id="clear" class="btn btn-danger">Clear</button>
-                </h1>
-                <div id="status"></div>
-                <div id="chat">
-                    <input type="text" id="username" class="form-control" placeholder="Enter name...">
-                    <br>
+            <div class="col-md-10 offset-md-1 col-sm-12">
+                
+                <h2 class="text-center">Discussions</h2>
+                <div class="text-center" ng-show="admin" >
+                    <button id="clear" ng-model="clearBtn" class="btn btn-danger">Clear Chat</button> 
+                </div>
+                <!-- <div id="status"></div> -->
+                <div id="chat" class="p-4">
+                  <!--   <input type="text" id="username" class="form-control" placeholder="Enter name...">
+                    <br> -->
                     <div class="card">
-                        <div id="messages" class="card-block">
-
+                        <div ng-model="messages" id="messages" class="card-block d-flex flex-column">
+                            
                         </div>
                     </div>
                     <br>
-                    <textarea id="textarea" class="form-control" placeholder="Enter message..."></textarea>
+                    <textarea ng-model="Inputmsg" id="textarea" class="form-control" placeholder="Enter message..."></textarea>
                 </div>
             </div>
         </div>
@@ -37,16 +100,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 
     <script>
-        (function(){
+        var app = angular.module("chat", []);
+        app.controller("mainController", function($scope, $http) {
+            $scope.user = false,  $scope.name = '';
+            $scope.msgs = ['af', 12];
+
+            $http({
+                    method : "GET",
+                    url : "/checksession"
+                })
+                .success(function (data, status, headers, config) {
+                    console.log("data returned " ,data);
+                    if (data.sessions != null) {
+                      $scope.user = true;
+                      // IS ADMIN
+                      if (data.sessions[0] == "000@wwg.com") {$scope.admin = true; $scope.name = "admin"}
+                      else {$scope.admin = false; $scope.name = data.sessions[2];}
+                    } else {
+                      $scope.user = false, $scope.admin = false;
+                    }
+
+                    console.log($scope.user, $scope.admin);
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data + "<hr />status: " + status + "<hr />headers: " + header +"<hr />config: " + config;
+                });
+
+
             var element = function(id){
                 return document.getElementById(id);
-            }
+            } 
 
             // Get Elements
-            var status = element('status');
+           // var status = element('status');
             var messages = element('messages');
             var textarea = element('textarea');
-            var username = element('username');
             var clearBtn = element('clear');
 
             // Set default status
@@ -72,17 +160,47 @@
 
                 // Handle Output
                 socket.on('output', function(data){
-                    console.log(data);
+                    
+                    //console.log(data);
                     if(data.length){
-                        for(var x = 0;x < data.length;x++){
+                        for(var x = 0 ;x < data.length;x++){
                             // Build out message div
-                            var message = document.createElement('div');
-                            message.setAttribute('class', 'chat-message');
-                            message.textContent = data[x].name+": "+data[x].message;
-                            messages.appendChild(message);
-                            messages.insertBefore(message, messages.firstChild);
+
+                            if(data[x].name == $scope.name){
+                                var messagebox = document.createElement('div');
+                                var message = document.createElement('div');
+                                var author = document.createElement('div');
+                                var text = document.createElement('div');
+                                author.textContent = data[x].name;
+                                author.classList.add("author"); 
+                                text.textContent = data[x].message;
+                                text.classList.add("msgText"); 
+                                message.classList.add("message");
+                                messagebox.classList.add("ownmsg");
+                                message.appendChild(author);
+                                message.appendChild(text);
+                                messagebox.appendChild(message);
+                                messages.appendChild(messagebox);
+                                console.log("ara");
+                            }
+                            else{
+                                var message = document.createElement('div');
+                                var author = document.createElement('div');
+                                var text = document.createElement('div');
+                                author.textContent = data[x].name;
+                                author.classList.add("author"); 
+                                author.classList.add("text-muted"); 
+                                text.textContent = data[x].message;
+                                text.classList.add("msgText"); 
+                                message.classList.add("message");
+                                message.appendChild(author);
+                                message.appendChild(text);
+                                messages.appendChild(message);
+                            }
+                            
                         }
                     }
+                     
                 });
 
                 // Get Status From Server
@@ -101,8 +219,9 @@
                     if(event.which === 13 && event.shiftKey == false){
                         // Emit to server input
                         socket.emit('input', {
-                            name:username.value,
-                            message:textarea.value
+                            name: $scope.name,
+                            message:textarea.value,
+                            date : new Date()
                         });
 
                         event.preventDefault();
@@ -120,7 +239,11 @@
                 });
             }
 
-        })();
+        })
+
+            
+
+
     </script>
 </body>
 </html>

@@ -12,15 +12,15 @@ app.set('views', __dirname + '/views');
 //app.engine('html', engine.mustache);
 //app.set('view engine', 'html');
 
+/*
+ var cors = require('cors');
+ app.use(cors());
 
 // var cors = require('cors');
 // app.use(cors());
-
-var cors = require('cors');
-app.use(cors());
 // use it before all route definitions
-//app.use(cors({origin: 'http://localhost:8080'}));
-
+app.use(cors({origin: 'http://localhost:8080'}));
+*/
 /* 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -55,7 +55,8 @@ app.use(express.static(__dirname+ '/public'));
 
 // MongoDB setup
 var mongoclient = require("mongodb").MongoClient;
-var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority"
+//var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority"
+var url = "mongodb://localhost:27017/";
 
 
 // Home Route
@@ -69,7 +70,7 @@ app.get('/checksession', (req, res)=>{
     console.log(session.userid);
     returnObj.sessions = session.userid ? session.userid : null;
     res.json(returnObj);
-})
+});
 
 app.get('/index', (req, res) => {
     var returnObj = {};
@@ -143,7 +144,7 @@ app.post("/login", (req,res) => {
             else if (result[0].password != enteredPass) res.json( "Incorrect password" );
             else if (result[0].password == enteredPass) {
                 session=req.session;
-                session.userid=[req.body.email, result[0].premium] ;
+                session.userid=[req.body.email, result[0].premium, result[0].name] ;
              //   console.log(session.userid);
              res.json("success");
             }
@@ -349,7 +350,9 @@ app.get("/chat",  (req,res) => {
     res.sendFile(__dirname + "/views/chat.html");
 });
 
-const client = require('socket.io')();
+
+const client = require('socket.io').listen(4000).sockets;
+//var mongo = require("mongodb").MongoClient;
 // Connect to mongo
 mongoclient.connect(url, function(err, db){
     if(err){
@@ -358,9 +361,11 @@ mongoclient.connect(url, function(err, db){
 
     console.log('MongoDB connected...');
 
+    var dbo = db.db("wherever_we_go");
+
     // Connect to Socket.io
     client.on('connection', function(socket){
-        let chat = db.collection('chats');
+        let chat = dbo.collection('chats');
 
         // Create function to send status
         sendStatus = function(s){
@@ -368,7 +373,7 @@ mongoclient.connect(url, function(err, db){
         }
 
         // Get chats from mongo collection
-        chat.find().limit(100).sort({_id:1}).toArray(function(err, res){
+        chat.find().limit(100).sort({ date : 1 }).toArray(function(err, res){
             if(err){
                 throw err;
             }
@@ -379,16 +384,19 @@ mongoclient.connect(url, function(err, db){
 
         // Handle input events
         socket.on('input', function(data){
-            let name = data.name;
-            let message = data.message;
+            let obj = {
+                'name': data.name, 
+                'message': data.message, 
+                'date': data.date
+            }
 
             // Check for name and message
-            if(name == '' || message == ''){
+            if(data.message == ''){
                 // Send error status
                 sendStatus('Please enter a name and message');
             } else {
                 // Insert message
-                chat.insert({name: name, message: message}, function(){
+                chat.insert(obj, function(){
                     client.emit('output', [data]);
 
                     // Send status object
@@ -410,5 +418,6 @@ mongoclient.connect(url, function(err, db){
         });
     });
 });
+
 
 app.listen(8080);
