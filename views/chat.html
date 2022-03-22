@@ -9,6 +9,9 @@
 
     <title>Chat</title>
     <style>
+        .card-block{
+            overflow-y: scroll;
+        }
         #messages{height:300px;}
         nav{
             border-bottom: 1px solid rgba(0,0,0,0.2);
@@ -198,7 +201,8 @@
                                 messages.appendChild(message);
                             }
                             
-                        }
+                        } // for
+                        messages.scrollTop = messages.scrollHeight;
                     }
                      
                 });
