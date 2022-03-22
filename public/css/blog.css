@@ -1,3 +1,18 @@
+.flex {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.around {justify-content: space-around;}
+
+.gimg {
+    margin: 10px;
+}
+
+.lg {
+    font-size: large;
+}
+
 .checked {
     color: orange;
 }
