@@ -47,29 +47,25 @@
             <div class="regcontainer">
               <div class="regcard">
               <div class="header">
-                <h2 class="animation a1">Welcome to Wherever We Go!</h2>
+                <h2 class="my-4 animation a1">Welcome to Wherever We Go!</h2>
                 <h4 class="animation a2">Create a new account using your Email ID and Password</h4>
               </div>
               <form name = "form" class="form" ng-submit="submit()">
 
                 <input type="name" class="form-field animation a3" placeholder = "Enter Name" name="name" id="name" ng-model="name" ng-required="true" autofocus>
-                <br>
 
                 <input type="email" placeholder="Email Address" id="email" class="form-field animation a4" ng-model="email" name="email" ng-required="true" ng-pattern="/^[a-z0-9/_$#%]+@[a-z]+[.]+[a-z]+$/">
-                  <small class="error" ng-if="form.email.$touched && form.email.$error.pattern"><br />Email has to be in format abc@gmail.com</small>
-                <br>
+                <small class="error" ng-if="form.email.$touched && form.email.$error.pattern"><br />Email has to be in format abc@gmail.com</small>
 
                 <input type="password" placeholder="Password" name="pass" class="form-field animation a5" id="pass" ng-model="pass" ng-required="true" ng-minlength="7" ng-maxlength="15" ng-pattern="/^(?=.*[a-zA-Z])(?=.*[@!#$%\^])(?=.*[0-9]).*$/">
-                  <small class="error" ng-if="form.pass.$touched && form.pass.$error.required">Password is required</small>
-                  <small class="error" ng-if="form.pass.$error.minlength || form.pass.$error.maxlength">Password can be minimum 7 characters max 15 characters.</small>
-                  <small class="error" ng-if="form.pass.$error.pattern">Password should have atleast 1 number, 1 capital letter and 1 special character</small>
-                <br>
+                <small class="error" ng-if="form.pass.$touched && form.pass.$error.required">Password is required</small>
+                <small class="error" ng-if="form.pass.$error.minlength || form.pass.$error.maxlength">Password can be minimum 7 characters max 15 characters.</small>
+                <small class="error" ng-if="form.pass.$error.pattern">Password should have atleast 1 number, 1 capital letter and 1 special character</small>
 
                 <label for=""></label>
                 <select class="form-field animation a6" name="statelist" id="statelist" ng-options="x for x in statelist" ng-model="selectedOption" ng-required="true"></select>
                 <br>
                 <div class="header"><h4 class="animation a7">Already Registered?<a href="/login">Sign in Here</a></h4></div>
-                <br>
                 <button class="animation a6" style="color: black; font-size: 18px;">REGISTER</button>
               </form>
             </div>

@@ -67,7 +67,7 @@ app.get("/", (req,res,next) => {
 app.get('/checksession', (req, res)=>{
     var returnObj = {};
     session = req.session;
-    console.log(session.userid);
+    //console.log(session.userid);
     returnObj.sessions = session.userid ? session.userid : null;
     res.json(returnObj);
 });

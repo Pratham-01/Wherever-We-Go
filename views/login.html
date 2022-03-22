@@ -52,23 +52,19 @@
             <div class="logincard">
         
               <div class="header">
-                <h2 class="animation a1">Welcome Back</h2>
+                <h2 class="mt-4 mb-2 animation a1">Welcome Back</h2>
                 <h4 class="animation a2">Log In to your Account using Email and Password</h4>
               </div>
               <form name = "form" class="form">
                 <input type="email" placeholder="Email Address" id="email" class="form-field animation a3" ng-model="email" name="email" ng-required="true" ng-pattern="/^[a-z0-9/_$#%]+@[a-z]+[.]+[a-z]+$/" autofocus>
                 <small class="error" ng-if="form.email.$touched && form.email.$error.pattern"><br />Email has to be in format abc@gmail.com</small>
-                <br>
 
                 <input type="password" placeholder="Password" name="pass" class="form-field animation a4" id="pass" ng-model="pass" ng-required="true">
                 <small class="error" ng-if="form.pass.$touched && form.pass.$error.required"><br>Password is required</small>
-                <br>
 
+                <br>
                 <div class="header"><h4 class="animation a5">New User?<a href="/register">Register Here</a></h4></div>
-                <br>
-
                 <div class="header"><h4 class="animation a5">Explore More<a href="/">Go to Home</a></h4></div>
-                <br>
                 <button class="animation a6" style="color: black; font-size: 18px;" ng-click="submit()">LOGIN</button>
               </form>
         
