@@ -8,53 +8,72 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="/css/blog.css" type="text/css">
+        <link rel="stylesheet" href="/css/main.css" type="text/css">
     </head>
 
     <body ng-app = "myApp" ng-controller = "MyController">
         <div id="navbar">
-            <ul class="nav nav-pills">
-                
+            <ul class="nav nav-pills navbar">
+                        
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
 
+                <!-- Premium -->
+                <li class="nav-item" ng-show="premium==true || admin==true">
+                    <a class="nav-link" href="/chat">Chat</a>
+                </li>
+
+                <li>
+                    <li class="nav-item" ng-show="user">
+                        <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
+                    </li> 
+
                     <li class="nav-item" ng-show="user">
                         <a class="nav-link" href="/logout">Log Out</a>
                     </li>
-                    <li class="nav-item" ng-show="user">
-                        <a class="nav-link" href="">Signed in as <strong>{{ userid }}</strong></a>
-                    </li> 
-                
+                </li>
+
+                <li>
                     <li class="nav-item" ng-hide="user">
                         <a class="nav-link" href="/login">Log In</a>
                     </li>
                     <li class="nav-item" ng-hide="user">
                         <a class="nav-link" href="/register">Register</a>
                     </li>
+                </li>
+                
                 
             </ul>
         </div>
 
             <div id="body" class="container">
-                <h1>{{ blog.title }}</h1>
+                <div class="alert alert-primary flex around title">
+                    <h2>{{ blog.title }}</h2>
+                    <h4>{{blog.city}}, {{blog.state}}</h4>
+                </div>
 
-                    <div class="row">
+                    <div class="row align-items-center">
                       <div class="col">
-                        <img  src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="image" width="600px">
+                        <img  src="data:image/png;base64,{{ blog.imgs[0].image }}" alt="image" class="img">
                       </div>
                       <div class="col-sm">
-                        <div>{{ content }}</div>
+                        <p>{{ content1 }}.</p>
                       </div>
                     </div>
+                    <hr>
 
-                    <div class="row">
+                    <div class="row align-items-center">
                       <div class="col">
                         <span ng-hide="user">
                             <a class="nav-link" href="/register">...Sign Up to read Full Blog</a>
                         </span>
+                        <div class="col-sm" ng-show="user">
+                            <div>{{ content2 }}</div>
+                          </div>
                       </div>
                       <div class="col-sm">
-                        <img  src="data:image/png;base64,{{ blog.imgs[1].image }}" alt="image" width="600px">
+                        <img  src="data:image/png;base64,{{ blog.imgs[1].image }}" alt="image" class="img">
                       </div>
                     </div>
 
@@ -97,13 +116,38 @@
                         <button type="submit" class="btn btn-sm btn-warning">Post</button>
                     </form>
 
-                    <ul id="comments">
+                    <ul id="pinned">
                         <li  ng-repeat="comment in blog.comments">
-                            {{ comment.userid }}: {{ comment.text }}
+                            <div ng-show="comment.pin">
+                                {{ comment.userid }}: {{ comment.text }}
+                                <span ng-show="admin">
+                                    <form ng-submit="pin(this, false)">
+                                        <input type="hidden" value="{{ comment.text }}" name="input" id="{{comment.text}}" disabled>
+                                        <button  type="submit">Unpin</button>
+                                    </form>
+                                </span>
+                            </div>
+                            
                         </li>
                     </ul>
+
+                    
                 
                 </div>
+
+                <ul id="comments">
+                    <li  ng-repeat="comment in blog.comments">
+                        <div ng-hide="comment.pin">
+                            {{ comment.userid }}: {{ comment.text }}
+                            <span ng-show="admin">
+                                <form ng-submit="pin(this, true)">
+                                    <input type="hidden" value="{{ comment.text }}" name="input" id="{{comment.text}}" disabled>
+                                    <button  type="submit">Pin</button>
+                                </form>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
                     
             </div>
     </body>
@@ -114,6 +158,36 @@
             app.controller("MyController", function($scope, $http) {
 
                 $scope.user = false, $scope.admin = false, $scope.premium=false, $scope.reqExist = false, $scope.rated = false, $scope.comed=false;
+
+                $scope.pin = (form, p) => {
+
+                    console.log("here1:", form);
+
+                    var data = {
+                        'comment' : form.comment.text,
+                        'pin': p
+                    };
+                    console.log("data: ", data);
+
+                    $http({
+                        method: 'PUT',
+                        url: "/pin" + window.location.pathname,
+                        //headers: {"Content-Type": "application/json;charset=UTF-8"},
+                        data: data
+                    })
+                    .success(function (data, status, headers, config) {
+                    if (data == "success")
+                        console.log("pinned");
+                        window.location.reload();
+                    })
+                    .error(function (data, status, header, config) {
+                        console.log(data)
+                        $scope.ResponseDetails = "Data: " + data +
+                            "<hr />status: " + status +
+                            "<hr />headers: " + header +
+                            "<hr />config: " + config;
+                    });
+                };
 
                 $scope.rate = () => {
                     var ele = document.getElementsByName('rating1');
@@ -217,13 +291,19 @@
                     console.log("data returned ", data);
                     $scope.blog = data[0];
 
-                    var length = $scope.blog.content.length;
+                    let myArray = $scope.blog.content.split(".");
+                    var length = myArray.length;
+                    let arr1 = myArray.slice(0, length/2);
+                    let arr2 = myArray.slice(length/2);
+                    console.log(arr1, arr2);
+
+                    $scope.content1 = arr1.join(". ");
+
                     if($scope.user) {
-                        console.log("true: ", $scope.user);
-                        $scope.content = $scope.blog.content;
+                        $scope.content2 = arr2.join(". ");
                     } else {
                         console.log("false:" ,$scope.user);
-                        $scope.content = $scope.blog.content.slice(0, length/2);
+                        $scope.content2 = "";
                     }
 
                     $scope.num = 0;
@@ -240,6 +320,8 @@
                     });
                     if ($scope.num !== 0){
                         $scope.frating /= $scope.num;
+                        $scope.frating = $scope.frating.toFixed(2);
+
                     } else {
                         $scope.frating = '-';
                     }

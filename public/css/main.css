@@ -1,6 +1,6 @@
 .navbar {
     display: flex;
-    background-color: #f0ffff;
+    background-color: floralwhite;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
@@ -12,6 +12,10 @@
     flex-flow: row wrap;
 }
 
+.between {
+    justify-content: space-between;
+}
+
 .si{
     text-align: center;
     margin: 10px;
@@ -20,7 +24,7 @@
 }
 
 body {
-    background-image: linear-gradient(rgb(146, 243, 247), rgb(12, 233, 185), rgb(193, 104, 252));
+    background-color: azure;
     padding: 10px;
     overflow-x: hidden;
     font-family: 'Trebuchet MS';
@@ -29,12 +33,12 @@ body {
 .sidebar {background-color: transparent;}
 
 .card {
-    margin: 30px;
-    width: 300px;
+    margin: 20px;
+    width: 250px;
 }
 
 .card-body {
-    background-color: azure;
+    background-color: snow;
     padding: 0;
     padding-left: 15px;
     padding-top: 10px;

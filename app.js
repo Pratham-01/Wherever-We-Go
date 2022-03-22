@@ -137,15 +137,16 @@ app.post("/login", (req,res) => {
         var enteredPass = req.body.password;
         var dbo = db.db("wherever_we_go");
         dbo.collection("users").find({ _id : enteredEmail }).toArray( (err, result) => {
-           // console.log(result);
             if (err) throw err;
             
             if (result.length == 0) res.json( "No such user exists");
             else if (result[0].password != enteredPass) res.json( "Incorrect password" );
             else if (result[0].password == enteredPass) {
                 session=req.session;
+
                 session.userid=[req.body.email, result[0].premium, result[0].name] ;
              //   console.log(session.userid);
+
              res.json("success");
             }
             db.close();
@@ -338,6 +339,26 @@ app.put("/comment/blog/:id", (req, res) => {
         dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
             if (err) throw err;
             console.log("1 document updated");
+            db.close();
+        });
+    });
+    res.json("success");
+});
+
+app.put("/pin/blog/:id", (req, res) => {
+
+    var blogid = req.params.id.toString();
+
+    mongoclient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("wherever_we_go");
+        console.log("here", req.body.comment);
+        var myquery = { $and: [{_id: ObjectId(blogid)}, {"comments.text": req.body.comment}]};
+        var newvalues = { $set: {"comments.$.pin": req.body.pin} };
+        dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
+            if (err) throw err;
+
+            console.log("1 comment pinned", res);
             db.close();
         });
     });
