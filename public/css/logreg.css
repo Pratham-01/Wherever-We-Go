@@ -1,43 +1,40 @@
 * { box-sizing: border-box; }
 
-body {
-  font-family: 'Dosis', sans-serif;
-}
-
 .container {
   display: flex;
   height: 100vh;
 }
 body{
-  background: #44A08D;  
-  background: -webkit-linear-gradient(to right, #093637, #44A08D);  
-  background: linear-gradient(to right, #093637, #44A08D);
+  font-family: 'Dosis', sans-serif;
+  /*background: linear-gradient(to right, #051935, #28bed8); */
+  align-items: center;
+  justify-content: center;
 }
 .error{
-  color: white;
+  color: rgb(219, 21, 21);
 }
 
-a
-{
+a {
   float: right;
-  color: white;
+  color: rgb(17, 3, 3);
 }
 
 a:hover, a:focus, a:active, a:visited {
-  color: azure;
+  color: rgb(0, 2, 2);
 }
 
 
 .header > h2 {
   margin: 0;
-  color: rgb(255, 255, 255);
+  color: rgb(22, 2, 2);
+  font-weight: bolder;
 }
 
 .header > h4 {
   margin-top: 10px;
-  font-weight: normal;
+  font-weight: bold;
   font-size: 15px;
-  color: rgb(255, 255, 255);
+  color: rgb(19, 2, 2);
 }
 
 .form {
@@ -57,7 +54,7 @@ a:hover, a:focus, a:active, a:visited {
 .form-field {
   height: 46px;
   padding: 0 16px;
-  border: 2px solid #ddd;
+  border: 2px solid rgb(150, 146, 146);
   border-radius: 4px;
   font-family: 'Dosis', sans-serif;
   outline: 0;
@@ -66,16 +63,16 @@ a:hover, a:focus, a:active, a:visited {
 }
 
 .form-field:focus {
-  border-color: #0f7ef1;
+  border-color: #4d4f52;
 }
 
 .form > button {
   padding: 12px 10px;
   border: 0;
-  background: linear-gradient(to right, #01ffb3 0%,#0084ff 100%); 
+  background: linear-gradient(to right, #176f97 0%,#55b2ce 100%); 
   border-radius: 3px;
   margin-top: 10px;
-  color: #fff;
+  color: white;
   letter-spacing: 1px;
   font-family: 'Dosis', sans-serif;
 }
@@ -128,11 +125,6 @@ a:hover, a:focus, a:active, a:visited {
   }
 }
 
-body {
-  align-items: center;
-  justify-content: center;
-}
-
 #logincontainer {
   margin-left: 10%;
   display: flex;
@@ -146,37 +138,38 @@ body {
 }
 
 #loginimage {
-  margin-top: 80px;
+  margin-top: 20px;
   height: 430px;
   border-radius: 20px;
 }
 
 #regimage {
-  margin-top: 130px;
+  margin-top: 20px;
   height: 530px;
   border-radius: 20px;
 }
 
 .logincard {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
-  border : 2px solid grey;
+  border : 2px solid rgb(14, 4, 4);
   border-radius: 20px;
   padding: 25px;
   width: auto;
-  margin-top: 80px;
+  margin-top: 20px;
   margin-right: 75px;
   height: fit-content;
 }
 
 .regcard {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
-  border : 2px solid grey;
+  border : 2px solid rgb(7, 1, 1);
   border-radius: 20px;
   padding: 25px;
   width: auto;
-  margin-top: 80px;
+  margin-top: 15px;
   margin-right: 75px;
   max-height: 630px;
+  max-width: 450px;
 }
 
 

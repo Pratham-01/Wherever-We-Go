@@ -326,7 +326,7 @@ app.put("/comment/blog/:id", (req, res) => {
         if (err) throw err;
         var dbo = db.db("wherever_we_go");
         var myquery = { _id: ObjectId(blogid) };
-        var newvalues = { $push: { "comments": {"userid":req.body.email, "text": req.body.text, "date": new Date()}} };
+        var newvalues = { $push: { "comments": {"userid":req.body.email,"name": req.session.userid[2], "text": req.body.text, "date": new Date()}} };
         dbo.collection("blogs").updateOne(myquery, newvalues, function(err, res) {
             if (err) throw err;
             console.log("1 document updated");

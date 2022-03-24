@@ -6,10 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Blog</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <link rel="stylesheet" href="/css/navbar.css" type="text/css">
     <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <style>
+
+        .form{
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+
         .coloredHover{
             background-color: #bbb;
             color: white !important;
@@ -17,43 +24,89 @@
     </style>
 
 </head>
-<body ng-app="addBlogApp" ng-controller="mainController" class="container">
+<body ng-app="addBlogApp" ng-controller="mainController">
 
-    <form action="/add_blog" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="title">Title </label>
-          <input type="text" class="form-control" id="title" name="title" ng-model="title" placeholder="Enter Title of the new blog">
-        </div><br>
-        <div class="form-group">
-            <label for="content">Blog</label>
-            <textarea class="form-control" id="content" name="content" ng-model="content" rows="20" placeholder="Blog Content ..."></textarea>
-        </div><br>
-        <div class="form-group">
-            <label for="state">State</label>
-            <select class="form-control" id="state" name="state" ng-model="state" ng-options="x for x in statelist"></select>
-        </div><br>
-        <div class="form-group">
-          <label for="city">City</label>
-          <input type="text" class="form-control" id="city" name="city" ng-model="city" placeholder="City" >
-        </div><br>
-<!-- 
-        <label for="">Add Image</label>
-        <button type="button" class="btn" ng-click="addPhoto()"  ng-class="{coloredHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false" > 
-           
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="icons bi bi-plus" viewBox="0 0 16 16">
-                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-            </svg>
-        </button><br><br>
+    <nav class="py-0 mb-5 d-flex flex-row navbar navbar-expand-lg navbar-light bg-light">
+        <div class="w-25">
+            <a  href="/"><img src="../images/Picture1.png" alt="login" class="w-75" style="padding: 0; margin: 0;"> </a>
+        </div>  
+        <ul class="d-flex flex-row nav nav-pills navbar">
+                            
+            <li class="mr-2 nav-item d-flex align-items-center">
+                <a class="nav-link" href="/">Home</a>
+            </li>
 
-        <div id="photosContainer">
+            <!-- Premium -->
+         
+            <li>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
+                    <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
+                </li> 
 
-        </div>
- -->
-         <input multiple type="file" name="imgs" id="imgs" ng-model="imgs" accept="image/*"> 
-        <br>
- 
-        <button type="submit" class="btn btn-primary"  >Create</button> <!-- ng-click="createBlog()" -->
-    </form>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
+                    <a class="nav-link" href="/logout">Log Out</a>
+                </li>
+            </li>
+
+            <li>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
+                    <a class="nav-link" href="/login">Log In</a>
+                </li>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
+                    <a class="nav-link" href="/register">Register</a>
+                </li>
+            </li>
+            
+            
+        </ul>
+    </nav>
+
+    <div class="container">
+
+
+        <div class="alert alert-primary"><h3>Add a New Blog</h3></div>
+
+        <form action="/add_blog" method="post" enctype="multipart/form-data" class="form">
+            <div class="form-group">
+            <label for="title">Title </label>
+            <input type="text" class="form-control" id="title" name="title" ng-model="title" placeholder="Enter Title of the new blog">
+            </div><br>
+            <div class="form-group">
+                <label for="content">Blog</label>
+                <textarea class="form-control" id="content" name="content" ng-model="content" rows="15" placeholder="Blog Content ..."></textarea>
+            </div><br>
+            <div class="form-group">
+                <label for="state">State</label>
+                <select class="form-control" id="state" name="state" ng-model="state" ng-options="x for x in statelist"></select>
+            </div><br>
+            <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" name="city" ng-model="city" placeholder="City" >
+            </div><br>
+    <!-- 
+            <label for="">Add Image</label>
+            <button type="button" class="btn" ng-click="addPhoto()"  ng-class="{coloredHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false" > 
+            
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="icons bi bi-plus" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+            </button><br><br>
+
+            <div id="photosContainer">
+
+            </div>
+    -->
+            <div class="form-group">
+                <label for="imgs">Upload Images</label>
+                <input class="form-control" multiple type="file" name="imgs" id="imgs" ng-model="imgs" accept="image/*"> 
+            </div>
+            <br><br>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="width: 50%;">Create</button> <!-- ng-click="createBlog()" -->
+            </div><hr>
+        </form>
+    </div>
+    
 
 
     <script>
@@ -65,6 +118,32 @@
               "Uttar Pradesh","Uttarakhand","West Bengal","Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli","Daman and Diu","Lakshadweep","National Capital Territory of Delhi","Puducherry"
             ];  
             $scope.state = "State";
+
+            $http({
+                    method : "GET",
+                    url : "/checksession"
+                })
+                .success(function (data, status, headers, config) {
+                    console.log("data returned " ,data);
+                    if (data.sessions != null) {
+                      $scope.user = true;
+                      // IS ADMIN
+                      if (data.sessions[0] == "000@wwg.com") {$scope.admin = true; $scope.name = "admin"}
+                      else {$scope.admin = false; $scope.name = data.sessions[2];}
+
+                        // IS Premium
+                        if(data.sessions[1] == true || $scope.admin==true) {$scope.premium = true;}
+                        else {window.location.href="/";}
+
+                    } else {
+                      window.location.href="/";
+                    }
+
+                    console.log($scope.user, $scope.admin);
+                })
+                .error(function (data, status, header, config) {
+                    $scope.ResponseDetails = "Data: " + data + "<hr />status: " + status + "<hr />headers: " + header +"<hr />config: " + config;
+                });
 
 /*
             // alternate request to server

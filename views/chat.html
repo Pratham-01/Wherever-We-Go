@@ -51,11 +51,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10 offset-md-1 col-sm-12">
-                
-                <h2 class="text-center">Discussions</h2>
-                <div class="text-center" ng-show="admin" >
-                    <button id="clear" ng-model="clearBtn" class="btn btn-danger">Clear Chat</button> 
+                <div class="text-center" style="display: flex; justify-content: space-around;">
+                    <h2 class="text-center btn btn-lg btn-outline-primary">Bon Voyage</h2>
+                    <button id="clear" ng-model="clearBtn" class="btn btn-danger" ng-show="admin">Clear Chat</button> 
                 </div>
+                
                 <!-- <div id="status"></div> -->
                 <div id="chat" class="p-4">
                   <!--   <input type="text" id="username" class="form-control" placeholder="Enter name...">
@@ -93,7 +93,7 @@
                       else {$scope.admin = false; $scope.name = data.sessions[2];}
 
                         // IS Premium
-                        if(data.sessions[1] == "true" || $scope.admin==true) {$scope.premium = true;}
+                        if(data.sessions[1] == true || $scope.admin==true) {$scope.premium = true;}
                         else {window.location.href="/";}
 
                     } else {

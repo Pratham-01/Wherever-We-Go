@@ -80,11 +80,11 @@
                     <h5 class="text-muted text-center">Admin</h5>
                     <a href="/add_blog" class="my-3 btn btn-primary btn-lg active w-100" >Add Blog</a>
                     
-                    <details ng-show="admin" class="si">
-                        <summary class="  btn btn-secondary btn-lg">Requests</summary>
-                        <form>
+                    <details ng-show="admin" class="si w-100">
+                        <summary class="  btn btn-secondary btn-lg w-100">Requests</summary>
+                        <form class="w-100 text-center">
                             <div ng-repeat="x in requests">
-                                <label for="{{x.userid}}">{{x.userid}}</label>
+                                <label for="{{x.userid}}" class="lab">{{x.userid}}</label>
                                 <input type="checkbox" name="requests" value="{{x.userid}}" ng-model="typeValues[x.userid]">
                                 <br>
                             </div>
@@ -96,17 +96,21 @@
                 </div>
 
                 <div ng-show="user==true && admin==false">
+                    
                     <hr>
                     <h5 class="text-muted text-center">Premium</h5>
-                    <div class="" ng-show="user==true && premium==false && reqExist == false && admin==false && rejected== false">
-                        <a href="/prem_apply">Apply for premium</a>
+                    <a class="text-center btn btn-primary w-100 pr" ng-show="user==true && premium==false && reqExist == false && admin==false && rejected== false" href="/prem_apply">
+                        Apply for premium
+                    </a>
+                    <div class="text-center btn btn-primary w-100 pr" ng-show="user==true && premium==false && reqExist == true">
+                        Pending Premium Membership Request
                     </div>
-                    <div class="text-center" ng-show="user==true && premium==false && reqExist == true">
-                        <span class="">Pending Premium Membership Request</span>
+                    <div class="text-center btn btn-secondary w-100 pr" ng-show="user==true && premium==false && rejected== true">
+                        Rejected
                     </div>
-                    <div class="text-center" ng-show="user==true && premium==false && rejected== true">
-                        <span class="">Rejected</span>
-                    </div>
+                    <a class="text-center btn btn-primary w-100 pr" ng-show="premium==true || admin==true" href="/chat">
+                        Chat
+                    </a>
                 </div>
     
             </div>

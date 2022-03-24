@@ -30,3 +30,12 @@ body {
     padding: 0;
     padding-top: 10px;
 }
+
+.pr a, span {
+    color: white;
+    text-decoration: none;
+}
+
+.lab {
+    margin: 8px;
+}
