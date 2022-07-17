@@ -32,7 +32,7 @@ app.use(express.static(__dirname+ '/public'));
 // MongoDB setup
 var mongoclient = require("mongodb").MongoClient;
 //var url = "mongodb+srv://pushpit:pass@cluster0.m1kld.mongodb.net/wherever_we_go?retryWrites=true&w=majority"
-var url = "mongodb://127.0.0.1:27017/";
+var url = "mongodb+srv://pratz:pratz%40123@cluster0.on7a2jm.mongodb.net/?retryWrites=true&w=majority";
 
 
 // Home Route

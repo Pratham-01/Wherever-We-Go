@@ -94,7 +94,6 @@
                     url : "/checksession"
                 })
                 .success(function (data, status, headers, config) {
-                    console.log("data returned " ,data);
                     if (data.sessions != null) {
                       $scope.user = true;
                       // IS ADMIN
@@ -109,7 +108,6 @@
                       window.location.href="/";
                     }
 
-                    console.log($scope.user, $scope.admin);
                 })
                 .error(function (data, status, header, config) {
                     $scope.ResponseDetails = "Data: " + data + "<hr />status: " + status + "<hr />headers: " + header +"<hr />config: " + config;
@@ -142,7 +140,7 @@
             // }
 
             // Connect to socket.io
-            var socket = io.connect('http://172.16.0.245:4000');
+            var socket = io.connect('https://wherever-we-go.herokuapp.com:4000');
 
             // Check for connection
             if(socket !== undefined){
