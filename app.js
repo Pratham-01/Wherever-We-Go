@@ -430,13 +430,13 @@ mongoclient.connect(url, function(err, db){
                 sendStatus('Please enter a name and message');
             } else {
                 // Insert message
-                chat.insert(obj, function(){
+                chat.insertOne(obj, function(){
                     client.emit('output', [data]);
+                    socket.emit('clearText');
 
                     // Send status object
                     sendStatus({
                         message: 'Message sent',
-                        clear: true
                     });
                 });
             }
@@ -445,9 +445,9 @@ mongoclient.connect(url, function(err, db){
         // Handle clear
         socket.on('clear', function(data){
             // Remove all chats from collection
-            chat.remove({}, function(){
+            chat.deleteMany({}, function(){
                 // Emit cleared
-                socket.emit('cleared');
+                client.emit('cleared');
             });
         });
     });

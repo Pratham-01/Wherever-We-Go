@@ -121,27 +121,28 @@
             } 
 
             // Get Elements
-           // var status = element('status');
+            // var status = element('status');
             var messages = element('messages');
             var textarea = element('textarea');
             var clearBtn = element('clear');
 
             // Set default status
-            var statusDefault = status.textContent;
+            // var statusDefault = status.textContent;
+            // console.log(statusDefault);
 
-            var setStatus = function(s){
-                // Set status
-                status.textContent = s;
-
-                if(s !== statusDefault){
-                    var delay = setTimeout(function(){
-                        setStatus(statusDefault);
-                    }, 4000);
-                }
-            }
+            // var setStatus = function(s){
+            //     // Set status
+            //     status.textContent = s;
+            //     console.log("here", status);
+            //     if(s !== statusDefault){
+            //         var delay = setTimeout(function(){
+            //             setStatus(statusDefault);
+            //         }, 4000);
+            //     }
+            // }
 
             // Connect to socket.io
-            var socket = io.connect('http://127.0.0.1:4000');
+            var socket = io.connect('http://172.16.0.245:4000');
 
             // Check for connection
             if(socket !== undefined){
@@ -149,6 +150,7 @@
 
                 // Handle Output
                 socket.on('output', function(data){
+                    console.log("output");
                     
                     //console.log(data);
                     if(data.length){
@@ -170,7 +172,6 @@
                                 message.appendChild(text);
                                 messagebox.appendChild(message);
                                 messages.appendChild(messagebox);
-                                console.log("ara");
                             }
                             else{
                                 var message = document.createElement('div');
@@ -196,12 +197,12 @@
                 // Get Status From Server
                 socket.on('status', function(data){
                     // get message status
-                    setStatus((typeof data === 'object')? data.message : data);
-
-                    // If status is clear, clear text
-                    if(data.clear){
-                        textarea.value = '';
-                    }
+                    console.log("data", data);
+                    // setStatus((typeof data === 'object')? data.message : data);
+                });
+                
+                socket.on('clearText', function(){
+                    textarea.value = '';    
                 });
 
                 // Handle Input
@@ -230,9 +231,6 @@
             }
 
         })
-
-            
-
 
     </script>
 </body>
