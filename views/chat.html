@@ -4,54 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/navbar.css" type="text/css">
     <link rel="stylesheet" href="/css/chat.css" type="text/css">
+    
     <title>Chat</title>
 </head>
 
 <body class="" ng-app="chat" ng-controller="mainController">
 
-    <nav class="py-0 mb-5 d-flex flex-row navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="py-0 m-0 d-flex flex-row navbar navbar-expand-md navbar-light bg-light" id="navbar">
         <div class="w-25">
-            <a  href="/"><img src="../images/Picture1.png" alt="login" class="w-75" style="padding: 0; margin: 0;"> </a>
-        </div>  
-        <ul class="d-flex flex-row nav nav-pills navbar">
-                            
-            <li class="mr-2 nav-item d-flex align-items-center">
-                <a class="nav-link" href="/">Home</a>
-            </li>
+            <a  href="/"><img src="../images/Picture1.png" alt="login" class="w-75" style="padding: 0; margin: 0; min-width: 200px;"> </a>
+        </div>
+        <button style="background-color: rgb(25, 46, 46); color: aliceblue; margin-right: 20px;" class="navbar-toggler font-weight-bold btn-info rounded mt-3" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse"  id="navbarResponsive">
+            <ul class="d-flex flex-row nav nav-pills navbar" id="nav-ul">
+        
+                <li ng-show="user">
+                    <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
+                        <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
+                    </li> 
+    
+                    <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
+                        <a class="nav-link" href="/logout">Log Out</a>
+                    </li>
+                </li>
+    
+                <li ng-hide="user">
+                    <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
+                        <a class="nav-link" href="/login">Log In</a>
+                    </li>
+                    <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
+                        <a class="nav-link" href="/register">Register</a>
+                    </li>
+                </li>
 
-            <!-- Premium -->
-         
-            <li>
-                <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
-                    <a class="nav-link" href="">Signed in as <strong>{{ name }}</strong></a>
+                <li class="mr-2 nav-item d-flex align-items-center" ng-show="premium==true || admin==true">
+                    <a class="nav-link" href="/chat">Chat</a>
                 </li> 
-
-                <li class="mr-2 nav-item d-flex align-items-center" ng-show="user">
-                    <a class="nav-link" href="/logout">Log Out</a>
-                </li>
-            </li>
-
-            <li>
-                <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
-                    <a class="nav-link" href="/login">Log In</a>
-                </li>
-                <li class="mr-2 nav-item d-flex align-items-center" ng-hide="user">
-                    <a class="nav-link" href="/register">Register</a>
-                </li>
-            </li>
-            
-            
-        </ul>
+            </ul>
+        </div>
     </nav>
 
     <div class="container">
         <div class="row">
             <div class="col-md-10 offset-md-1 col-sm-12">
-                <div class="text-center" style="display: flex; justify-content: space-around;">
+                <div class="text-center mt-4" style="display: flex; justify-content: space-around;">
                     <h2 class="text-center btn btn-lg btn-outline-primary">Bon Voyage</h2>
                     <button id="clear" ng-model="clearBtn" class="btn btn-danger" ng-show="admin">Clear Chat</button> 
                 </div>
@@ -61,7 +70,7 @@
                   <!--   <input type="text" id="username" class="form-control" placeholder="Enter name...">
                     <br> -->
                     <div class="card">
-                        <div ng-model="messages" id="messages" class="h-75 card-block d-flex flex-column">
+                        <div ng-model="messages" id="messages" class="card-block d-flex flex-column">
                             
                         </div>
                     </div>

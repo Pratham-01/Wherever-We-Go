@@ -1,3 +1,12 @@
+.flex {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.between {
+  justify-content: space-between;
+}
+
 nav {
     border-bottom: 1px solid rgba(0,0,0,0.2);
     box-shadow: 10px 10px 15px rgba(200,200,200,0.50);
@@ -9,5 +18,19 @@ nav a.nav-link{
   border-radius: 20px !important;
   margin:  0 10px;
   padding: 0.4rem 2rem;
+}
 
+@media only screen and (max-width: 576px) {
+  #nav-ul {
+    display: block !important;
+  }
+
+  nav a.nav-link{
+    margin:  5px 10px;
+    padding: 0.4rem 2rem;
+  }
+
+  .nav-item {
+    justify-content: end;
+  }
 }

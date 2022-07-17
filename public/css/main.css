@@ -16,13 +16,15 @@ body {
 }
 
 .sidebar {
-    background-color: transparent;
+    background-color: rgba(34, 136, 164, 0.132);
     border: 1px solid rgba(0,0,0,0.2);
 }
 
 .card {
     margin: 20px;
-    width: 250px;
+    width: 27%;
+    min-width: 200px;
+    height: fit-content;
 }
 
 .card-body {
@@ -38,4 +40,47 @@ body {
 
 .lab {
     margin: 8px;
+}
+
+.text-muted {
+    color: darkslategray !important;
+}
+
+.btn-custom {
+    background-color: darkslategray;
+    color: aliceblue;
+}
+
+.btn-custom:hover {
+    color: white;
+}
+
+@media only screen and (min-width: 769px) {
+    .sidebar {
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+        border-radius: 10px;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .sidebar {
+        width: 80%;
+        border-radius: 20px;
+    }
+
+    #body {
+        justify-content: center;
+    }
+
+    .card {
+        width: 40%;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .card {
+        width: 80%;
+    }
 }

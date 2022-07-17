@@ -1,9 +1,5 @@
 * { box-sizing: border-box; }
 
-.container {
-  display: flex;
-  height: 100vh;
-}
 body{
   font-family: 'Dosis', sans-serif;
   /*background: linear-gradient(to right, #051935, #28bed8); */
@@ -84,31 +80,31 @@ a:hover, a:focus, a:active, a:visited {
 }
 
 .a1 {
-  animation-delay: 1s;
+  animation-delay: 0.8s;
 }
 
 .a2 {
-  animation-delay: 1.2s;
+  animation-delay: 1s;
 }
 
 .a3 {
-  animation-delay: 1.4s;
+  animation-delay: 1.2s;
 }
 
 .a4 {
-  animation-delay: 1.6s;
+  animation-delay: 1.4s;
 }
 
 .a5 {
-  animation-delay: 1.8s;
+  animation-delay: 1.6s;
 }
 
 .a6 {
-  animation-delay: 2.0s;
+  animation-delay: 1.8s;
 }
 
 .a7 {
-  animation-delay: 2.2s;
+  animation-delay: 2.0s;
 }
 
 @keyframes move {
@@ -125,26 +121,20 @@ a:hover, a:focus, a:active, a:visited {
   }
 }
 
-#logincontainer {
-  margin-left: 10%;
+#logincontainer, #regcontainer {
   display: flex;
   flex-flow: row wrap;
-}
-
-#regcontainer {
-  margin-left: 10%;
-  display: flex;
-  flex-flow: row wrap;
+  justify-content:space-evenly;
 }
 
 #loginimage {
-  margin-top: 20px;
+  margin-top: 30px;
   height: 430px;
   border-radius: 20px;
 }
 
 #regimage {
-  margin-top: 20px;
+  margin-top: 30px;
   height: 530px;
   border-radius: 20px;
 }
@@ -155,8 +145,7 @@ a:hover, a:focus, a:active, a:visited {
   border-radius: 20px;
   padding: 25px;
   width: auto;
-  margin-top: 20px;
-  margin-right: 75px;
+  margin-top: 30px;
   height: fit-content;
 }
 
@@ -166,15 +155,20 @@ a:hover, a:focus, a:active, a:visited {
   border-radius: 20px;
   padding: 25px;
   width: auto;
-  margin-top: 15px;
-  margin-right: 75px;
+  height: fit-content;
+  margin-top: 25px;
   max-height: 630px;
   max-width: 450px;
 }
 
 
-@media screen and (max-width: 700px) {
-  #loginimage {
+@media screen and (max-width: 768px) {
+  #loginimage, #regimage {
       display: none;
+  }
+
+  .logincard, .regcard {
+    margin-left: 20px;
+    margin-right: 20px;
   }
 }

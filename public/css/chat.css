@@ -1,6 +1,7 @@
 .card-block{
     overflow-y: scroll;
     min-height: 300px;
+    max-height: 50vh;
 }
 .message{
     border-radius: 5px;
