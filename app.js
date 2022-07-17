@@ -384,10 +384,10 @@ app.get("/chat",  (req,res) => {
     res.sendFile(__dirname + "/views/chat.html");
 });
 
+server = app.listen(process.env.PORT || 8080);
+const client = require('socket.io')(server);
+// const client = require('socket.io').listen(4000).sockets;
 
-const client = require('socket.io').listen(4000).sockets;
-//var mongo = require("mongodb").MongoClient;
-// Connect to mongo
 mongoclient.connect(url, function(err, db){
     if(err){
         throw err;
@@ -452,6 +452,3 @@ mongoclient.connect(url, function(err, db){
         });
     });
 });
-
-
-app.listen(process.env.PORT || 8080);
